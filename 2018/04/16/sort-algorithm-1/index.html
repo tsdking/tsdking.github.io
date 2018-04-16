@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>最快最简单的排序算法 | 老徐的博客 | 三流代码，一流Bug</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="算法">
+    <meta name="description" content="桶排序的基本思想是将一个数据表分割成许多buckets，然后每个bucket各自排序，或用不同的排序算法，或者递归的使用bucket sort算法。也是典型的divide-and-conquer分而治之的策略。它是一个分布式的排序，介于MSD基数排序和LSD基数排序之间。  基本流程 建立一堆buckets；  遍历原">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最快最简单的排序算法">
+<meta property="og:url" content="http://tsdking.github.io/2018/04/16/sort-algorithm-1/index.html">
+<meta property="og:site_name" content="老徐的博客">
+<meta property="og:description" content="桶排序的基本思想是将一个数据表分割成许多buckets，然后每个bucket各自排序，或用不同的排序算法，或者递归的使用bucket sort算法。也是典型的divide-and-conquer分而治之的策略。它是一个分布式的排序，介于MSD基数排序和LSD基数排序之间。  基本流程 建立一堆buckets；  遍历原始数组，并将数据放入到各自的buckets当中；  对非空的buckets进">
+<meta property="og:image" content="http://i1.bvimg.com/577927/250a0b827531fd9c.png">
+<meta property="og:updated_time" content="2018-04-16T16:05:05.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="最快最简单的排序算法">
+<meta name="twitter:description" content="桶排序的基本思想是将一个数据表分割成许多buckets，然后每个bucket各自排序，或用不同的排序算法，或者递归的使用bucket sort算法。也是典型的divide-and-conquer分而治之的策略。它是一个分布式的排序，介于MSD基数排序和LSD基数排序之间。  基本流程 建立一堆buckets；  遍历原始数组，并将数据放入到各自的buckets当中；  对非空的buckets进">
+<meta name="twitter:image" content="http://i1.bvimg.com/577927/250a0b827531fd9c.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="老徐的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">老徐</h5>
+          <a href="mailto:535567352@qq.com" title="535567352@qq.com" class="mail">535567352@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tsdking" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/xqflylg" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">最快最简单的排序算法</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="検索">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">最快最简单的排序算法</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-16T15:31:58.000Z" itemprop="datePublished" class="page-time">
+  2018-04-16
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基本流程"><span class="post-toc-number">1.</span> <span class="post-toc-text">基本流程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#简单解释"><span class="post-toc-number">2.</span> <span class="post-toc-text">简单解释</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#优点"><span class="post-toc-number">3.</span> <span class="post-toc-text">优点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#缺点"><span class="post-toc-number">4.</span> <span class="post-toc-text">缺点</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-sort-algorithm-1"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">最快最简单的排序算法</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-16 23:31:58" datetime="2018-04-16T15:31:58.000Z"  itemprop="datePublished">2018-04-16</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><img src="http://i1.bvimg.com/577927/250a0b827531fd9c.png" alt="如图"></p>
+<blockquote>
+<p>桶排序的基本思想是将一个数据表分割成许多buckets，然后每个bucket各自排序，或用不同的排序算法，或者递归的使用bucket sort算法。也是典型的divide-and-conquer分而治之的策略。它是一个分布式的排序，介于MSD基数排序和LSD基数排序之间。</p>
+</blockquote>
+<h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><ul>
+<li>建立一堆buckets； </li>
+<li>遍历原始数组，并将数据放入到各自的buckets当中； </li>
+<li>对非空的buckets进行排序； </li>
+<li>按照顺序遍历这些buckets并放回到原始数组中即可构成排序后的数组。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 定义一个length=11的int数组book用来记录</span></span><br><span class="line"><span class="comment">         * 并舒适化默认值都为0</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span>[] book=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">11</span>];</span><br><span class="line">        <span class="keyword">int</span> length1 = book.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">11</span>; i++) &#123;</span><br><span class="line">            book[i]=<span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 定义一个任意length的数组source，但是保证数组中每个元素在[0,10]内</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span>[] source=&#123;<span class="number">0</span>,<span class="number">8</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">9</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> length = source.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * source中的元素每出现一次</span></span><br><span class="line"><span class="comment">             * book中对应下标的值就加1</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            book[source[i]]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">10</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * 序号出现几次就打印几次</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;=book[i] ; j++) &#123;</span><br><span class="line">                System.out.print(i+<span class="string">" "</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="简单解释"><a href="#简单解释" class="headerlink" title="简单解释"></a>简单解释</h2><p>上述代码是桶排序算法简单的java实现，形象地描述就是如果我们要对0~10之间的数字排序，那么我们就准备11个桶（0~10共11个数），每出现一个数，就在对应编号的桶中放一个小旗子，最后只要数一数每个桶中有几个小旗子就行了。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>每个桶的作用实际就是标记每个数出现的次数。该算法的时间复杂度是O（m+n+m+n）即O（2*（m+n）），忽略较小的常数，最终桶排序的时间复杂度为O（M+N），这是一个很快的排序算法（时间复杂度通常用大写字母表示）；</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>特费空间，这是典型的空间换时间，还有如果要对一些小数排序，怎么办？</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最終更新：<time datetime="2018-04-16T16:05:05.498Z" itemprop="dateUpdated">2018-04-17 00:05:05</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/04/16/sort-algorithm-1/" target="_blank" rel="external">http://tsdking.github.io/2018/04/16/sort-algorithm-1/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="http://tsdking.github.io">
+            <img src="/img/avatar.jpg" alt="老徐">
+            老徐
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/&title=《最快最简单的排序算法》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/&title=《最快最简单的排序算法》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/16/sort-algorithm-1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《最快最简单的排序算法》 — 老徐的博客&url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/&via=http://tsdking.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/14/hexo-blog-note/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Hexo博客搭建笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>このブログの内容物は<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際ライセンスの下に提供されています</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>老徐 &copy; 2017 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/&title=《最快最简单的排序算法》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/&title=《最快最简单的排序算法》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/16/sort-algorithm-1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《最快最简单的排序算法》 — 老徐的博客&url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/&via=http://tsdking.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/16/sort-algorithm-1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLUlEQVR42u3aMXLDMAwFUd//0krrwpL2A3LGBJeVJyNRfCwQgsDrhcfxNsgz18+fPUO+0hoyZMhYlnFcDr7Es7fIDOlbH6gyZMjYgHEWwc6eIYGSLJpvxM2aZciQIQOH1zRwp9+VIUOGjE7ATfPNH/2/IUOGjB9mpElmLaHlc34xF5chQ8aCjDRE/ufvr9Q3ZMiQsRTjCEftKMmLlEdpyJAhYzaDBzh+RONFgnSbbr4iQ4aMoQxehkxLkjzVfGAeGTJkjGZ0Jk0/kF6l8es5GTJkzGZ8uz3iOnzzgkHruk2GDBmLM9KP8fLk9WaRJZKjqgwZMnZg1Jok0sNfB4aOoTJkyNiAkV6okXDcadTg2/chiZUhQ8ZoBsfUypnPljZvrttkyJAxjkEy3X5xMciq8bEynlqGDBkLMp7qVeBlhk7Sy7dAhgwZkxhpOlpLU/lfyJPx0VCGDBmLM9Kpa5doaTNZLVjLkCFjN0a6IHKVxhPR2vbJkCFjNqPfmNUJ0LVWD37NJ0OGjBmM9HK/VtTkSWltBhkyZOzM4MknP1bygmUQdmXIkLEBo7ZQ0sLVKV4Gb8mQIWMo4whHmsp2FhdQZciQMZrBB5+ap6n8WImaLWTIkDGawa+6amwSptMtkyFDxp6MNPDVWiv623QauGXIkCEDtEd0Lt14V8hNRi5DhgwZjZy4lgYHybAMGTI2YNRastJPpsfKIEmWIUPGaAZ/7YGJyCGvfWCVIUPGIMYfbJAi4GdNmboAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
