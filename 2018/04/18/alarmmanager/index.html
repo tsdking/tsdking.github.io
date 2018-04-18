@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>定时执行周期任务之AlarmManager，了解一下 | 老徐的博客 | 三流代码，一流Bug</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android">
+    <meta name="description" content="报菜名 ​    AlarmManager可用于计划未来的单次或重复的操作，甚至在应用程序没有运行时也可以执行任务，它通过PendingIntent触发执行各种系统组件，如BroadcastReceiver，Activity或Service等。 ​    或者说AlarmManager比较适用于应用程序没有运行但仍然需">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="定时执行周期任务之AlarmManager，了解一下">
+<meta property="og:url" content="http://tsdking.github.io/2018/04/18/alarmmanager/index.html">
+<meta property="og:site_name" content="老徐的博客">
+<meta property="og:description" content="报菜名 ​    AlarmManager可用于计划未来的单次或重复的操作，甚至在应用程序没有运行时也可以执行任务，它通过PendingIntent触发执行各种系统组件，如BroadcastReceiver，Activity或Service等。 ​    或者说AlarmManager比较适用于应用程序没有运行但仍然需要执行某些操作的场景。如果程序运行时需要执行简单的定时操作，使用Handler的">
+<meta property="og:image" content="http://www.wailian.work/images/2018/04/18/pendingintent.png">
+<meta property="og:updated_time" content="2018-04-18T16:42:34.618Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="定时执行周期任务之AlarmManager，了解一下">
+<meta name="twitter:description" content="报菜名 ​    AlarmManager可用于计划未来的单次或重复的操作，甚至在应用程序没有运行时也可以执行任务，它通过PendingIntent触发执行各种系统组件，如BroadcastReceiver，Activity或Service等。 ​    或者说AlarmManager比较适用于应用程序没有运行但仍然需要执行某些操作的场景。如果程序运行时需要执行简单的定时操作，使用Handler的">
+<meta name="twitter:image" content="http://www.wailian.work/images/2018/04/18/pendingintent.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="老徐的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">老徐</h5>
+          <a href="mailto:535567352@qq.com" title="535567352@qq.com" class="mail">535567352@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tsdking" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/xqflylg" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">定时执行周期任务之AlarmManager，了解一下</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">定时执行周期任务之AlarmManager，了解一下</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-18T04:28:14.000Z" itemprop="datePublished" class="page-time">
+  2018-04-18
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#报菜名"><span class="post-toc-number">1.</span> <span class="post-toc-text">报菜名</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">2.</span> <span class="post-toc-text">注意事项</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#唤醒类型"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">唤醒类型</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#上菜"><span class="post-toc-number">3.</span> <span class="post-toc-text">上菜</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#示例2"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">示例2</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后"><span class="post-toc-number">4.</span> <span class="post-toc-text">最后</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-alarmmanager"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">定时执行周期任务之AlarmManager，了解一下</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-18 12:28:14" datetime="2018-04-18T04:28:14.000Z"  itemprop="datePublished">2018-04-18</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="报菜名"><a href="#报菜名" class="headerlink" title="报菜名"></a>报菜名</h2><blockquote>
+<p>​    AlarmManager可用于计划未来的<strong>单次或重复</strong>的操作，<strong>甚至在应用程序没有运行时也可以执行任务</strong>，它通过PendingIntent触发执行各种<strong>系统组件，</strong>如BroadcastReceiver，Activity或Service等。</p>
+<p>​    或者说AlarmManager比较适用于<u>应用程序没有运行</u>但仍然需要执行某些操作的场景。如果<u>程序运行时</u>需要执行简单的定时操作，使用Handler的postAtTime()和postDelay()就可以了。</p>
+<p>在设备重启后，提醒自动失效，需要手动计划之前注册的提醒</p>
+</blockquote>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><h3 id="唤醒类型"><a href="#唤醒类型" class="headerlink" title="唤醒类型"></a>唤醒类型</h3><table>
+<thead>
+<tr>
+<th>ELAPSED_REALTIME</th>
+<th style="text-align:left">ELAPSED_REALTIME_WAKEUP</th>
+<th style="text-align:left">RTC</th>
+<th style="text-align:left">RTC_WAKEUP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>根据设备上次启动以来的时间值（毫秒）触发提醒</td>
+<td style="text-align:left">根据经过的时间触发提醒，如果设备处于休眠状态，将被<strong>激活</strong></td>
+<td style="text-align:left">根据UTC时间触发警告</td>
+<td style="text-align:left">根据UTC时间触发警告，如果设备处于休眠状态，将被<strong>激活</strong></td>
+</tr>
+</tbody>
+</table>
+<p>注意，如果使用<code>ELAPSED_REALTIME_WAKEUP</code>或<code>RTC_WAKEUP</code>这种唤醒类型的提醒，系统虽然会被唤醒但是不会保持唤醒状态，在执行唤醒事件的后台工作时，需要通过PowerManager获得WakeLock，否则系统会重新将设备转入休眠状态，你要本要执行的操作也会被停止。</p>
+<p>###PendingIntent</p>
+<blockquote>
+<p>PendingIntent有很多构造方法，但是必须要保证它能正确的指向要触发的应用程序组件。</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://www.wailian.work/images/2018/04/18/pendingintent.png" alt="pendingintent.png" title="">
+                </div>
+                <div class="image-caption">pendingintent.png</div>
+            </figure>
+<h2 id="上菜"><a href="#上菜" class="headerlink" title="上菜"></a>上菜</h2><p><strong>AlarmReceiver</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlarmReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> IntentFilter mIntentFilter;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ACTION_ALARM = <span class="string">"ACTION_ALARM"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AlarmReceiver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mIntentFilter = <span class="keyword">new</span> IntentFilter();</span><br><span class="line">        mIntentFilter.addAction(ACTION_ALARM);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mIntentFilter.matchAction(intent.getAction())) &#123;</span><br><span class="line">            Calendar now = Calendar.getInstance();</span><br><span class="line">            Toast.makeText(context,</span><br><span class="line">                    <span class="string">"Msg："</span> + SimpleDateFormat.getTimeInstance().format(now.getTime()),</span><br><span class="line">                    Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意注册：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".AlarmReceiver"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>AlarmActivity</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlarmActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AlarmManager mAlarmManager;</span><br><span class="line">    <span class="keyword">private</span> PendingIntent mPendingIntent;</span><br><span class="line">    <span class="keyword">private</span> Intent mIntent;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mInterval = <span class="number">5000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_alarm);</span><br><span class="line">        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);</span><br><span class="line">        mIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>,AlarmReceiver.class);</span><br><span class="line">        mIntent.setAction(AlarmReceiver.ACTION_ALARM);</span><br><span class="line">        mPendingIntent = PendingIntent.getBroadcast(<span class="keyword">this</span>, <span class="number">0</span>, mIntent, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        mAlarmManager.setRepeating(</span><br><span class="line">                AlarmManager.ELAPSED_REALTIME,</span><br><span class="line">                SystemClock.elapsedRealtime() + mInterval,</span><br><span class="line">                mInterval,</span><br><span class="line">                mPendingIntent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancle</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        mAlarmManager.cancel(mPendingIntent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h3><blockquote>
+<p>每天上午9点执行任务<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start2</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> oneDay=<span class="number">24</span>*<span class="number">3600</span>*<span class="number">100</span>;</span><br><span class="line">        <span class="keyword">long</span> firstTime;</span><br><span class="line">        <span class="comment">//创建一个日历，并设置提醒的时间为09:00</span></span><br><span class="line">        Calendar startTime = Calendar.getInstance();</span><br><span class="line">        startTime.set(Calendar.HOUR_OF_DAY,<span class="number">9</span>);</span><br><span class="line">        startTime.set(Calendar.MINUTE,<span class="number">0</span>);</span><br><span class="line">        startTime.set(Calendar.SECOND,<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        Calendar now=Calendar.getInstance();</span><br><span class="line">        <span class="keyword">if</span> (now.before(startTime))&#123;</span><br><span class="line">            <span class="comment">//现在还没到上午9点，从今天算起</span></span><br><span class="line">            firstTime=startTime.getTimeInMillis();</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//从明天上午9点算起</span></span><br><span class="line">            startTime.add(Calendar.DATE,<span class="number">1</span>);</span><br><span class="line">            firstTime=startTime.getTimeInMillis();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//设置提醒</span></span><br><span class="line">        mAlarmManager.setRepeating(</span><br><span class="line">                AlarmManager.RTC_WAKEUP,</span><br><span class="line">                firstTime,</span><br><span class="line">                oneDay,</span><br><span class="line">                mPendingIntent);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>​    十九岁那年的分水岭，Android4.4（19）开始所有的提醒都是不准确的，这意味着讲通过一个小窗口触发它们，连同这个新行为还一起添加了API方法setExat(),通过这个方法我们可以声明下面的提醒不能放入不准确的窗口。</p>
+<p>​    </p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-18T16:42:34.618Z" itemprop="dateUpdated">2018-04-19 00:42:34</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/04/18/alarmmanager/" target="_blank" rel="external">http://tsdking.github.io/2018/04/18/alarmmanager/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="http://tsdking.github.io">
+            <img src="/img/avatar.jpg" alt="老徐">
+            老徐
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&url=http://tsdking.github.io/2018/04/18/alarmmanager/&via=http://tsdking.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/17/jobscheduler/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">定时执行周期任务之JobScheduler,了解一下</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>老徐 &copy; 2017 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&url=http://tsdking.github.io/2018/04/18/alarmmanager/&via=http://tsdking.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKklEQVR42u3aS27DMAwFwNz/0ummiwBt5EdKCWBptCpSw/Z4QfD3eMTn+XL+/vL6++t/391nfP931yw4GBgYt2U8h+fd4xPYzDX59RgYGOcwxsGxShqH0STslgM3BgYGxseuGf+CgYGBUX38ONWrlsHjp2BgYGD0itiomJxILr9Ui2NgYNyQkXfdv//3R+YbGBgYt2I8iycZCVTHljPv83sHDAyMrRkzI8y8EM1L4rz0/eetMDAwNmVUFx1mFr96rbcoYcXAwNiakY8VkwSu+uqr1sUwMDAwkuSsF6arSxiFjiAGBsZGjLVBs9r6zwvmctcQAwNjI0a1M9d7ZDVBrDbdMDAwTmDk+VWviV8NwVUeBgbGmYz5YWTvmiSIX3xQDAyM7Rirmmi9cNxrt0UjAQwMjE0Z1fDaC5S95t0FEgMDY2tGUmrmwfTROjMfAgMD4wTGzJJWb9w4n2L+w8PAwNiaUW27zy9n5GE0H6liYGCcxihMEoI9h2oQzxc1yk03DAyMjRj5K1aDcvKxqqkkBgbGaYxeuz9P8qojhzwEY2BgnMDotex7j68ucCwYQmBgYNyc0WviJyldPvjMS9mLBQsMDIxNGdXgW73R/Fg0L4MxMDD2ZvRa9nnRWx2CNp+CgYFxAKMaLqtNsWrTv/whMDAwMFpp3JjUWx27qMgxMDAwFgXH5OVyGAYGxjmMXhHbK3p7Af2ChIGBsTVjbYt/1fZHnlZiYGBszfgBiT/+9Zr+DFYAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
