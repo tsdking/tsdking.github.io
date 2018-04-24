@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Android反编译的简单总结 | 老徐的博客 | 三流代码，一流Bug</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android 工具 反编译">
+    <meta name="description" content="Android反编译的简单总结准备 apktool.jar   安卓apk反编译神器,主要作用于资源文件,清单文件等,也可用于jar;解码\构建 双向全能,用过的都说好.   apktool.bat   一段脚本,结合apktool.jar使用   Java 7 (JRE 1.7)及以上,使用java -version">
+<meta name="keywords" content="android 工具 反编译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android反编译的简单总结">
+<meta property="og:url" content="http://tsdking.github.io/2018/04/20/apkuncode/index.html">
+<meta property="og:site_name" content="老徐的博客">
+<meta property="og:description" content="Android反编译的简单总结准备 apktool.jar   安卓apk反编译神器,主要作用于资源文件,清单文件等,也可用于jar;解码\构建 双向全能,用过的都说好.   apktool.bat   一段脚本,结合apktool.jar使用   Java 7 (JRE 1.7)及以上,使用java -version查看 dex2jar   用于android的将classes.dex转换成ja">
+<meta property="og:image" content="http://www.wailian.work/images/2018/04/21/2018-04-22_112450.png">
+<meta property="og:image" content="http://www.wailian.work/images/2018/04/21/2018-04-22_112631.png">
+<meta property="og:image" content="http://www.wailian.work/images/2018/04/23/2018-04-23_175346.png">
+<meta property="og:image" content="http://www.wailian.work/images/2018/04/23/2018-04-23_181150.png">
+<meta property="og:updated_time" content="2018-04-24T03:59:42.189Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android反编译的简单总结">
+<meta name="twitter:description" content="Android反编译的简单总结准备 apktool.jar   安卓apk反编译神器,主要作用于资源文件,清单文件等,也可用于jar;解码\构建 双向全能,用过的都说好.   apktool.bat   一段脚本,结合apktool.jar使用   Java 7 (JRE 1.7)及以上,使用java -version查看 dex2jar   用于android的将classes.dex转换成ja">
+<meta name="twitter:image" content="http://www.wailian.work/images/2018/04/21/2018-04-22_112450.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="老徐的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">老徐</h5>
+          <a href="mailto:535567352@qq.com" title="535567352@qq.com" class="mail">535567352@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tsdking" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/xqflylg" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android反编译的简单总结</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android反编译的简单总结</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-19T17:34:59.000Z" itemprop="datePublished" class="page-time">
+  2018-04-20
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Android反编译的简单总结"><span class="post-toc-number">1.</span> <span class="post-toc-text">Android反编译的简单总结</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#准备"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">准备</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#安装"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#用法"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">用法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Apktool"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">Apktool</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解码"><span class="post-toc-number">1.3.1.1.</span> <span class="post-toc-text">解码</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#重新构建"><span class="post-toc-number">1.3.1.2.</span> <span class="post-toc-text">重新构建</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#补充"><span class="post-toc-number">1.3.1.3.</span> <span class="post-toc-text">补充</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Dex2jar"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">Dex2jar</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#JD-GUI"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">JD-GUI</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Google开源的神器ClassyShark"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">Google开源的神器ClassyShark</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-apkuncode"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android反编译的简单总结</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-20 01:34:59" datetime="2018-04-19T17:34:59.000Z"  itemprop="datePublished">2018-04-20</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Android反编译的简单总结"><a href="#Android反编译的简单总结" class="headerlink" title="Android反编译的简单总结"></a>Android反编译的简单总结</h1><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li><a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool.jar</a></li>
+</ul>
+<blockquote>
+<p>安卓apk反编译神器,主要作用于资源文件,清单文件<strong>等</strong>,也可用于jar;<br><strong>解码\构建</strong> 双向全能,用过的都说好.</p>
+</blockquote>
+<ul>
+<li>apktool.bat</li>
+</ul>
+<blockquote>
+<p>一段脚本,结合<code>apktool.jar</code>使用</p>
+</blockquote>
+<ul>
+<li>Java 7 (JRE 1.7)及以上,使用<code>java -version</code>查看</li>
+<li><a href="https://sourceforge.net/projects/dex2jar/" target="_blank" rel="noopener">dex2jar</a></li>
+</ul>
+<blockquote>
+<p>用于android的将classes.dex转换成jar的工具,可结合<code>JD-GUI</code>使用</p>
+</blockquote>
+<ul>
+<li><a href="http://www.softpedia.com/get/Programming/Debuggers-Decompilers-Dissasemblers/JD-GUI.shtml" target="_blank" rel="noopener">JD-GUI</a> </li>
+</ul>
+<blockquote>
+<p>免安装,非商业用途的java反编译器,如可用于查看jar包中的代码</p>
+</blockquote>
+<ul>
+<li>了解smali语法并且会使用 Android SDK, AAPT</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><blockquote>
+<p>若已安装,可跳过</p>
+</blockquote>
+<ul>
+<li><strong>Windows</strong></li>
+</ul>
+<ol>
+<li>复制如下脚本,并另存为<code>apktool.bat</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="keyword">if</span> <span class="string">"%PATH_BASE%"</span> == <span class="string">""</span> <span class="built_in">set</span> PATH_BASE=%PATH%</span><br><span class="line"><span class="built_in">set</span> PATH=%CD%;%PATH_BASE%;</span><br><span class="line">chcp 65001 2&gt;nul &gt;nul</span><br><span class="line">java -jar -Duser.language=en -Dfile.encoding=UTF8 <span class="string">"%~dp0\apktool.jar"</span> %*</span><br></pre></td></tr></table></figure>
+<ol>
+<li>下载最新版的<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool</a></li>
+<li>把下载好的jar重命名为<code>apktool.jar</code></li>
+<li>把上述两个文件<code>apktool.bat</code> &amp; <code>apktool.jar</code>放到同一个文件夹下,如<code>C:\windows</code></li>
+<li>(可选)如果你愿意,可以把第4步的路径添加到系统的环境变量里(&amp;PATH)</li>
+<li>打开cmd 输入apktool 检查是否输入帮助信息,是否安装成功</li>
+</ol>
+<ul>
+<li><strong>Linux</strong></li>
+</ul>
+<ol>
+<li>复制如下脚本,并另存为<code>apktool</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="keyword">if</span> <span class="string">"%PATH_BASE%"</span> == <span class="string">""</span> <span class="built_in">set</span> PATH_BASE=%PATH%</span><br><span class="line"><span class="built_in">set</span> PATH=%CD%;%PATH_BASE%;</span><br><span class="line">chcp 65001 2&gt;nul &gt;nul</span><br><span class="line">java -jar -Duser.language=en -Dfile.encoding=UTF8 <span class="string">"%~dp0\apktool.jar"</span> %*</span><br></pre></td></tr></table></figure>
+<ol>
+<li>下载最新版的<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool</a></li>
+<li>把下载好的jar重命名为<code>apktool.jar</code></li>
+<li>把上述两个文件<code>apktool</code> &amp; <code>apktool.jar</code>放到同一个文件夹下,如<code>/usr/local/bin</code></li>
+<li>确保上述文件有可执行权限<code>chmod +x</code></li>
+<li>Terminal运行<code>apktool</code> </li>
+</ol>
+<ul>
+<li><strong>Mac OS X</strong></li>
+</ul>
+<ol>
+<li>复制如下脚本,并另存为<code>apktool</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="keyword">if</span> <span class="string">"%PATH_BASE%"</span> == <span class="string">""</span> <span class="built_in">set</span> PATH_BASE=%PATH%</span><br><span class="line"><span class="built_in">set</span> PATH=%CD%;%PATH_BASE%;</span><br><span class="line">chcp 65001 2&gt;nul &gt;nul</span><br><span class="line">java -jar -Duser.language=en -Dfile.encoding=UTF8 <span class="string">"%~dp0\apktool.jar"</span> %*</span><br></pre></td></tr></table></figure>
+<ol>
+<li>下载最新版的<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool</a></li>
+<li>把下载好的jar重命名为<code>apktool.jar</code></li>
+<li>把上述两个文件<code>apktool</code> &amp; <code>apktool.jar</code>放到同一个文件夹下,如<code>/usr/local/bin</code></li>
+<li>确保上述文件有可执行权限<code>chmod +x</code></li>
+<li>Terminal运行<code>apktool</code> </li>
+</ol>
+<ul>
+<li><p><strong>注意</strong></p>
+<pre><code>apktool脚本并不是必须的,它只是帮你省去了`java -jar apktool.jar`这样重复的指令
+</code></pre></li>
+</ul>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><h3 id="Apktool"><a href="#Apktool" class="headerlink" title="Apktool"></a>Apktool</h3><p>首先我们要了解一下apk的结构,apk只是一个包含资源以及java代码的zip文件,可使用任何解压软件直接解压(如7zip),解压后可以得到诸如 <code>classes.dex</code> and <code>resources.arsc</code>这样的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ unzip testapp.apk</span><br><span class="line">Archive:  testapp.apk</span><br><span class="line"> inflating: AndroidManifest.xml</span><br><span class="line"> inflating: classes.dex</span><br><span class="line"> extracting: res/drawable-hdpi/ic_launcher.png</span><br><span class="line"> inflating: res/xml/literals.xml</span><br><span class="line"> inflating: res/xml/references.xml</span><br><span class="line"> extracting: resources.arsc</span><br></pre></td></tr></table></figure>
+<p>然而 这个时候只是解压了apk,如果你打开<code>AndroidManifest.xml</code>将会看到下面这些神秘字符</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://www.wailian.work/images/2018/04/21/2018-04-22_112450.png" alt="2018-04-22_112450.png" title="">
+                </div>
+                <div class="image-caption">2018-04-22_112450.png</div>
+            </figure>
+<p>亦或是这些神秘字符,反正看不懂就对了</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://www.wailian.work/images/2018/04/21/2018-04-22_112631.png" alt="2018-04-22_112631.png" title="">
+                </div>
+                <div class="image-caption">2018-04-22_112631.png</div>
+            </figure>
+<p>现在<code>apktool</code>排上用场了</p>
+<h4 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ apktool.bat  d -f girl.apk -o zsh</span><br><span class="line">I: Using Apktool 2.3.2 on girl.apk</span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding AndroidManifest.xml with resources...</span><br><span class="line">I: Loading resource table from file: C:\Users\Administrator\AppData\Local\apktool\framework\1.apk</span><br><span class="line">I: Regular manifest package...</span><br><span class="line">I: Decoding file-resources...</span><br><span class="line">I: Decoding values */* XMLs...</span><br><span class="line">I: Baksmaling classes.dex...</span><br><span class="line">I: Copying assets and libs...</span><br><span class="line">I: Copying unknown files...</span><br><span class="line">I: Copying original files...</span><br></pre></td></tr></table></figure>
+<p>解释一下上述指令中各参数的定义</p>
+<blockquote>
+<p><strong>girl.apk</strong>为要解码的安装包,名字随便起的</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d,decode</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>解码</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-f, --force</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若目标输出文件夹已经存在,则先强制删除</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-o, --output &lt;FILE&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>指定目标输出文件夹,若没有则自动创建</p>
+</blockquote>
+<p>其他可选项</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-api, --api-level &lt;API&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>要生成的smali文件的数字api级别（默认为targetSdkVersion）</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-b, --no-debug-info</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>防止baksmali写出调试信息（.local，.param，.line等）,比较不同版本apk的smali文件时使用,行号和调试将在各个版本之间改变，这可能会使阅读DIFF报告变得很痛苦。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--keep-broken-res</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>当尝试反编译一个非当前标准结构的apk时,会出现类似”Invalid Config Flags Detected. Dropping Resources…”的错误信息,这可能是用于使用了未知新版本的AndroidSDK构建或非已知标准结构的apk,使用上述命名可以允许错误继续decode,但是产生的错误信息需要你手动修复</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-m, --match-original</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>解码时将尽可能保持与原始文件一致,但是这样做可能会影响到重新构建rebuild</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--no-assets</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 解码时如果遇到未知的asset资产文件直接跳过</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-p, --frame-path &lt;DIR&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 指定本地framework文件的路径,这个后面会讲到,该文件解码时会用到,不指定时,apktool会到默认的路径<code>C:\Users\Administrator\AppData\Local\apktool\framework\</code>中查找,找不到就下载</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-r, --no-res</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 如果只是编辑Java (smali) 文件,则推荐使用,因为它使 <code>resources.arsc</code>保持不变,官方说法是<code>without any decode.</code>,这样解码与重构都会更快</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-s, --no-src</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 和上述命名类似,如果只是编辑资源文件,则推荐使用,因为它使 <code>*.dex</code>保持不变,同样官方说法是<code>without any decode.</code>,这样解码与重构都会更快</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-t, --frame-tag &lt;TAG&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 解码时,使用指定tag的framework文件,这个用的很少,知道就行了</p>
+</blockquote>
+<h4 id="重新构建"><a href="#重新构建" class="headerlink" title="重新构建"></a>重新构建</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apktool.bat  b girl -o newGirl.apk</span><br><span class="line">I: Using Apktool 2.3.2</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Checking whether resources has changed...</span><br><span class="line">I: Building apk file...</span><br><span class="line">I: Copying unknown files/dir...</span><br><span class="line">I: Built apk...</span><br></pre></td></tr></table></figure>
+<p>注意若不指定<code>-o newGirl.apk</code>,则默认的输出路径为<code>girl/build/dist</code></p>
+<p>构建时可用的选项</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-c, --copy-original</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 官方表示即将弃用该选项,它表示使用原apk的签名等信息<br> Copies original <code>AndroidManifest.xml</code> and <code>META-INF</code>folder into built apk.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-d, --debug</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 自动在清单文件中添加<code>debuggable=&quot;true&quot;</code> ,良心操作</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-f, --force-all</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 在构建过程中覆盖现有文件，重新组合resources.arsc文件和dex文件（s）</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--use-aapt2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 框架文件的加载位置</p>
+</blockquote>
+<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><p>Android应用程序一般会依赖或使用系统framework层的的代码和资源,这里简称为’框架资源’,Apktool工作时也是需要这些框架资源的;</p>
+<p>使用最新版的apktool时,它内部已经包含了当前正式发布的最新的AOSP 框架层数据,所以会较少遇到问题,但是由于android系统毫无节制的开放性,国内各厂商把源码改的乱七八糟,这其中当然包括framework层;当尝试decode这些定制rom中的应用时,则需要先安装各厂商的<strong>framework files</strong></p>
+<p>下面引入一个官方的例子</p>
+<p>如果你想要解码 <code>HtcContacts.apk</code>(HTC系统的通讯录应用),可能会得到下面的错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apktool d HtcContacts.apk</span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding resources...</span><br><span class="line">I: Loading resource table from file: 1.apk</span><br><span class="line">W: Could not decode attr value, using undecoded value instead: ns=android, name=drawable</span><br><span class="line">W: Could not decode attr value, using undecoded value instead: ns=android, name=icon</span><br><span class="line">Can&apos;t find framework resources for package of id: 2. You must install proper framework files, see project website for more info.</span><br></pre></td></tr></table></figure>
+<p>所以在解码之前,需要先从HTC设备中pull出<strong>框架资源</strong>  <code>com.htc.resources.apk</code>并且安装它;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ apktool if com.htc.resources.apk</span><br><span class="line">I: Framework installed to: 2.apk</span><br><span class="line"></span><br><span class="line">$ apktool d HtcContacts.apk </span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding resources...</span><br><span class="line">I: Loading resource table from file: /home/brutall/apktool/framework/1.apk</span><br><span class="line">I: Loading resource table from file: /home/brutall/apktool/framework/2.apk</span><br><span class="line">I: Copying assets and libs...</span><br></pre></td></tr></table></figure></p>
+<p>从设备中找到框架资源文件(这一步只能靠猜了):</p>
+<ul>
+<li><p>可能的文件路径</p>
+<ul>
+<li>/system/framework</li>
+<li>/data/system-framework</li>
+<li>/system/app</li>
+<li>/system/priv-app</li>
+</ul>
+</li>
+<li><p>可能的文件名</p>
+<ul>
+<li>resources</li>
+<li>res</li>
+<li>framework</li>
+</ul>
+</li>
+</ul>
+<p>apktool在使用这些文件时会自动缓存到默认目录下</p>
+<ul>
+<li>unix - <code>$HOME/.local/share/apktool</code></li>
+<li>windows - <code>%UserProfile%\AppData\Local\apktool</code></li>
+<li>mac - <code>$HOME/Library/apktool</code></li>
+</ul>
+<p>如:我的是在<code>C:\Users\Administrator\AppData\Local\apktool\framework</code></p>
+<p>这个选项或许有用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apktool empty-framework-dir</span><br></pre></td></tr></table></figure>
+<h3 id="Dex2jar"><a href="#Dex2jar" class="headerlink" title="Dex2jar"></a>Dex2jar</h3><p>方式一:</p>
+<blockquote>
+<ol>
+<li>修改apk扩展名为zip</li>
+<li>解压并拷贝classes.dex文件到dex2jar目录</li>
+<li>右键在dex2jar目录中打开cmd,保证cmd的工作路径是在当前目录,否则就cd进来</li>
+<li>cmd中运行<code>d2j-dex2jar.bat classes.dex</code></li>
+<li>自动生成classes-dex2jar.jar 文件,接下来就可以用JD-GUI打开了查看源码</li>
+</ol>
+</blockquote>
+<p>方式二:</p>
+<blockquote>
+<ol>
+<li>拷贝test.apk到dex2jar安装目录</li>
+<li>打开cmd,直接运行<code>d2j-dex2jar.bat test.apk</code></li>
+<li>自动生成test-dex2jar.jar 文件,接下来就可以用JD-GUI打开了查看源码</li>
+</ol>
+</blockquote>
+<h3 id="JD-GUI"><a href="#JD-GUI" class="headerlink" title="JD-GUI"></a>JD-GUI</h3><blockquote>
+<p>用法比较简单,直接把上一步生成的jar包拖到<code>jd-gui.exe</code>打开即可</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://www.wailian.work/images/2018/04/23/2018-04-23_175346.png" alt="2018-04-23_175346.png" title="">
+                </div>
+                <div class="image-caption">2018-04-23_175346.png</div>
+            </figure>
+<h2 id="Google开源的神器ClassyShark"><a href="#Google开源的神器ClassyShark" class="headerlink" title="Google开源的神器ClassyShark"></a>Google开源的神器ClassyShark</h2><blockquote>
+<p>可以可靠地浏览任何Android可执行文件并显示重要信息，例如类接口和成员，dex数量和依赖关系。 ClassyShark支持多种格式，包括库（.dex，.aar，.so），可执行文件（.apk，.jar，.class）和所有Android二进制XML：AndroidManifest，资源，布局等。</p>
+<ul>
+<li>直接查看apk结构资源,甚至源码</li>
+<li>在一定程度上: <a href="https://github.com/google/android-classyshark" target="_blank" rel="noopener">ClassyShark</a> = Apktool+dex2jar+JD-DUI</li>
+</ul>
+</blockquote>
+<p>用法:</p>
+<p>下载 <a href="https://github.com/google/android-classyshark/releases" target="_blank" rel="noopener">最新的JAR</a> ,执行 <code>java -jar ClassyShark.jar</code></p>
+<p><img src="http://www.wailian.work/images/2018/04/23/2018-04-23_181150.png" alt="2018-04-23_181150.png"></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-04-24T03:59:42.189Z" itemprop="dateUpdated">2018-04-24 11:59:42</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/04/20/apkuncode/" target="_blank" rel="external">http://tsdking.github.io/2018/04/20/apkuncode/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="http://tsdking.github.io">
+            <img src="/img/avatar.jpg" alt="老徐">
+            老徐
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android-工具-反编译/">android 工具 反编译</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/20/apkuncode/&title=《Android反编译的简单总结》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/20/apkuncode/&title=《Android反编译的简单总结》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/20/apkuncode/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android反编译的简单总结》 — 老徐的博客&url=http://tsdking.github.io/2018/04/20/apkuncode/&via=http://tsdking.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/20/apkuncode/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/18/alarmmanager/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">定时执行周期任务之AlarmManager，了解一下</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>老徐 &copy; 2017 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/20/apkuncode/&title=《Android反编译的简单总结》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/20/apkuncode/&title=《Android反编译的简单总结》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/20/apkuncode/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android反编译的简单总结》 — 老徐的博客&url=http://tsdking.github.io/2018/04/20/apkuncode/&via=http://tsdking.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/20/apkuncode/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKElEQVR42u3aS27DMAwFwNz/0u4BAtuPZFzA0mgVuP5otGApip9PPI6Tkdx5ds/Z77OnfjAwMDBeyzgux+QDZ2/4fk8Cu1kgDAyMDRh5WLyGXT+VXG++AQMDAyOYbh40H1kIDAwMjFaITMJ0vhwYGBgYySZ2vqFNwI/vxTEwMF7I6BXO/uf3I+cbGBgYr2IcxZEH0+sge31neVYYGBhLM/IAV00ce1GxNx8MDIy1GUlAzItxeWtF/q1oy4qBgbE0o9cS0Uv7qmW1/H4MDIy1GXmidj25JFwmwbe6lOWTDQwMjNcy8k8m1Dxl7AFuukUwMDA2YOTFtfnhQXUTe/p+DAyMDRi9JG/SwlUl3XwdAwNjaUZeVqs2ciXb4Op0m1VDDAyMRRnV4v6vynP5JvZmK4uBgbEcI290OFqjuq3N54aBgbEDoxpGq6GwV8Krvg0DA2NtRnWTWW2DmLdfFP6KgYGxNKN6AJCX5KJPxoljHvoxMDDWY/Tav6rHA72Er7CsGBgYmzGqgbiX6vUKeVHRDQMDYwNGPq3JQcIkTRz938DAwFiO0QuXvcDd29ZiYGCszZi3TTzXclGgYmBgLM3oJWdJ20QvcCddXpPDBgwMjPcyepObgyfpIwYGxp6MvIWimsxVr/SQGBgYGEkCNz/CTHonbopuGBgYGPFpQz7pBBAtGQYGxgaMZBObt2VUk79JgoiBgbEDI38sL73lZbXq9dGhJgYGxvsYf18AQc9pHSp7AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
