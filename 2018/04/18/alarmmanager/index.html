@@ -1,26 +1,16 @@
-<!DOCTYPE html>
-<html>
+
+ <!DOCTYPE HTML>
+<html >
 <head>
+  <meta charset="UTF-8">
+  
+    <title>定时执行周期任务之AlarmManager，了解一下 | 老徐的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="老徐">
     
 
     
-
-    
-
-
-
-    <meta charset="utf-8">
-    
-    
-    
-    
-    <title>定时执行周期任务之AlarmManager，了解一下 | 老徐的博客 | 三流代码，一流Bug</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    
-    <meta name="theme-color" content="#3F51B5">
-    
-    
-    <meta name="keywords" content="android">
     <meta name="description" content="报菜名 ​    AlarmManager可用于计划未来的单次或重复的操作，甚至在应用程序没有运行时也可以执行任务，它通过PendingIntent触发执行各种系统组件，如BroadcastReceiver，Activity或Service等。 ​    或者说AlarmManager比较适用于应用程序没有运行但仍然需">
 <meta name="keywords" content="android">
 <meta property="og:type" content="article">
@@ -34,163 +24,86 @@
 <meta name="twitter:title" content="定时执行周期任务之AlarmManager，了解一下">
 <meta name="twitter:description" content="报菜名 ​    AlarmManager可用于计划未来的单次或重复的操作，甚至在应用程序没有运行时也可以执行任务，它通过PendingIntent触发执行各种系统组件，如BroadcastReceiver，Activity或Service等。 ​    或者说AlarmManager比较适用于应用程序没有运行但仍然需要执行某些操作的场景。如果程序运行时需要执行简单的定时操作，使用Handler的">
 <meta name="twitter:image" content="http://www.wailian.work/images/2018/04/18/pendingintent.png">
-    
-        <link rel="alternate" type="application/atom+xml" title="老徐的博客" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
-    <script>window.lazyScripts=[]</script>
 
-    <!-- custom head -->
     
-
+    <link rel="alternative" href="/atom.xml" title="老徐的博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-    <div id="loading" class="active"></div>
-
-    <aside id="menu" class="hide" >
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.jpg">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname">老徐</h5>
-          <a href="mailto:535567352@qq.com" title="535567352@qq.com" class="mail">535567352@qq.com</a>
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-            <li class="waves-block waves-effect">
-              <a href="/"  >
-                <i class="icon icon-lg icon-home"></i>
-                主页
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/archives"  >
-                <i class="icon icon-lg icon-archives"></i>
-                Archives
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/tags"  >
-                <i class="icon icon-lg icon-tags"></i>
-                Tags
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/categories"  >
-                <i class="icon icon-lg icon-th-list"></i>
-                Categories
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="https://github.com/tsdking" target="_blank" >
-                <i class="icon icon-lg icon-github"></i>
-                Github
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="http://www.weibo.com/xqflylg" target="_blank" >
-                <i class="icon icon-lg icon-weibo"></i>
-                Weibo
-              </a>
-            </li>
-        
-      </ul>
-    </div>
-  </div>
-</aside>
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">定时执行周期任务之AlarmManager，了解一下</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
-            <i class="icon icon-lg icon-share-alt"></i>
-        </a>
-        
-    </div>
-</header>
-<header class="content-header post-header">
-
-    <div class="container fade-scale">
-        <h1 class="title">定时执行周期任务之AlarmManager，了解一下</h1>
-        <h5 class="subtitle">
-            
-                <time datetime="2018-04-18T04:28:14.000Z" itemprop="datePublished" class="page-time">
-  2018-04-18
-</time>
-
-
-            
-        </h5>
-    </div>
-
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="老徐的博客" title="老徐的博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="老徐的博客">老徐的博客</a></h1>
+				<h2 class="blog-motto">永远不变的是变化</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:tsdking.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
     
-
-
-</header>
-
-
-<div class="container body-wrap">
+      <a href="/2018/04/18/alarmmanager/" title="定时执行周期任务之AlarmManager，了解一下" itemprop="url">定时执行周期任务之AlarmManager，了解一下</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="老徐" target="_blank" itemprop="author">老徐</a>
+		
+  <p class="article-time">
+    <time datetime="2018-04-18T04:28:14.000Z" itemprop="datePublished"> Published 2018-04-18</time>
     
-    <aside class="post-widget">
-        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#报菜名"><span class="post-toc-number">1.</span> <span class="post-toc-text">报菜名</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">2.</span> <span class="post-toc-text">注意事项</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#唤醒类型"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">唤醒类型</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#上菜"><span class="post-toc-number">3.</span> <span class="post-toc-text">上菜</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#示例2"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">示例2</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后"><span class="post-toc-number">4.</span> <span class="post-toc-text">最后</span></a></li></ol>
-        </nav>
-    </aside>
-
-
-<article id="post-alarmmanager"
-  class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">定时执行周期任务之AlarmManager，了解一下</h1>
-        <div class="post-meta">
-            <time class="post-time" title="2018-04-18 12:28:14" datetime="2018-04-18T04:28:14.000Z"  itemprop="datePublished">2018-04-18</time>
-
-            
-
-
-            
-<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
-    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
-</span>
-
-
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="报菜名"><a href="#报菜名" class="headerlink" title="报菜名"></a>报菜名</h2><blockquote>
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#报菜名"><span class="toc-number">1.</span> <span class="toc-text">报菜名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意事项"><span class="toc-number">2.</span> <span class="toc-text">注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#唤醒类型"><span class="toc-number">2.1.</span> <span class="toc-text">唤醒类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#上菜"><span class="toc-number">3.</span> <span class="toc-text">上菜</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#示例2"><span class="toc-number">3.1.</span> <span class="toc-text">示例2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后"><span class="toc-number">4.</span> <span class="toc-text">最后</span></a></li></ol>
+		
+		</div>
+		
+		<h2 id="报菜名"><a href="#报菜名" class="headerlink" title="报菜名"></a>报菜名</h2><blockquote>
 <p>​    AlarmManager可用于计划未来的<strong>单次或重复</strong>的操作，<strong>甚至在应用程序没有运行时也可以执行任务</strong>，它通过PendingIntent触发执行各种<strong>系统组件，</strong>如BroadcastReceiver，Activity或Service等。</p>
 <p>​    或者说AlarmManager比较适用于<u>应用程序没有运行</u>但仍然需要执行某些操作的场景。如果<u>程序运行时</u>需要执行简单的定时操作，使用Handler的postAtTime()和postDelay()就可以了。</p>
 <p>在设备重启后，提醒自动失效，需要手动计划之前注册的提醒</p>
@@ -218,13 +131,7 @@
 <blockquote>
 <p>PendingIntent有很多构造方法，但是必须要保证它能正确的指向要触发的应用程序组件。</p>
 </blockquote>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://www.wailian.work/images/2018/04/18/pendingintent.png" alt="pendingintent.png" title="">
-                </div>
-                <div class="image-caption">pendingintent.png</div>
-            </figure>
+<p><img src="http://www.wailian.work/images/2018/04/18/pendingintent.png" alt="pendingintent.png"></p>
 <h2 id="上菜"><a href="#上菜" class="headerlink" title="上菜"></a>上菜</h2><p><strong>AlarmReceiver</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlarmReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> IntentFilter mIntentFilter;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ACTION_ALARM = <span class="string">"ACTION_ALARM"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AlarmReceiver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mIntentFilter = <span class="keyword">new</span> IntentFilter();</span><br><span class="line">        mIntentFilter.addAction(ACTION_ALARM);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mIntentFilter.matchAction(intent.getAction())) &#123;</span><br><span class="line">            Calendar now = Calendar.getInstance();</span><br><span class="line">            Toast.makeText(context,</span><br><span class="line">                    <span class="string">"Msg："</span> + SimpleDateFormat.getTimeInstance().format(now.getTime()),</span><br><span class="line">                    Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>注意注册：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".AlarmReceiver"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><strong>AlarmActivity</strong></p>
@@ -234,274 +141,403 @@
 </blockquote>
 <h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>​    十九岁那年的分水岭，Android4.4（19）开始所有的提醒都是不准确的，这意味着讲通过一个小窗口触发它们，连同这个新行为还一起添加了API方法setExat(),通过这个方法我们可以声明下面的提醒不能放入不准确的窗口。</p>
 <p>​    </p>
-
-        </div>
-
-        <blockquote class="post-copyright">
-    
-    <div class="content">
-        
-<span class="post-time">
-    Last updated: <time datetime="2018-04-18T16:42:34.618Z" itemprop="dateUpdated">2018-04-19 00:42:34</time>
-</span><br>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
 
 
-        
-        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/04/18/alarmmanager/" target="_blank" rel="external">http://tsdking.github.io/2018/04/18/alarmmanager/</a>
-        
-    </div>
-    
-    <footer>
-        <a href="http://tsdking.github.io">
-            <img src="/img/avatar.jpg" alt="老徐">
-            老徐
-        </a>
-    </footer>
-</blockquote>
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/android/">android</a>
+  </div>
 
-        
-
-
-        <div class="post-footer">
-            
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-
-
-            
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&url=http://tsdking.github.io/2018/04/18/alarmmanager/&via=http://tsdking.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
 </div>
 
 
 
-        </div>
-    </div>
-
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/2018/04/20/apkuncode/" id="post-prev" class="post-nav-link">
-        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Android反编译的简单总结</h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/2018/04/17/jobscheduler/" id="post-next" class="post-nav-link">
-        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">定时执行周期任务之JobScheduler,了解一下</h4>
-      </a>
-    </div>
-  
-</nav>
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://tsdking.github.io/2018/04/18/alarmmanager/" data-title="定时执行周期任务之AlarmManager，了解一下 | 老徐的博客" data-tsina="1954587467" class="share clearfix">
+	  </div>
+	
+	</div>
 
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</article>
-
-
-
-</div>
-
-        <footer class="footer">
-    <div class="top">
-        
-<p>
-    <span id="busuanzi_container_site_uv" style='display:none'>
-        站点总访客数：<span id="busuanzi_value_site_uv"></span>
-    </span>
-    <span id="busuanzi_container_site_pv" style='display:none'>
-        站点总访问量：<span id="busuanzi_value_site_pv"></span>
-    </span>
-</p>
-
-
-        <p>
-            
-                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
-            
-            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
-        </p>
-    </div>
-    <div class="bottom">
-        <p><span>老徐 &copy; 2017 - 2018</span>
-            <span>
-                
-                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
-            </span>
-        </p>
-    </div>
 </footer>
 
-    </main>
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2018/04/20/apkuncode/" title="Android反编译的简单总结">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Android反编译的简单总结</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2018/04/17/jobscheduler/"  title="定时执行周期任务之JobScheduler,了解一下">
+ <strong>下一篇：</strong><br/> 
+ <span>定时执行周期任务之JobScheduler,了解一下
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2018/04/18/alarmmanager/" data-title="定时执行周期任务之AlarmManager，了解一下" data-url="http://tsdking.github.io/2018/04/18/alarmmanager/"></div>
+</section>
+
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
 
 
 
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/18/alarmmanager/&title=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《定时执行周期任务之AlarmManager，了解一下》 — 老徐的博客&url=http://tsdking.github.io/2018/04/18/alarmmanager/&via=http://tsdking.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/18/alarmmanager/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#报菜名"><span class="toc-number">1.</span> <span class="toc-text">报菜名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意事项"><span class="toc-number">2.</span> <span class="toc-text">注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#唤醒类型"><span class="toc-number">2.1.</span> <span class="toc-text">唤醒类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#上菜"><span class="toc-number">3.</span> <span class="toc-text">上菜</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#示例2"><span class="toc-number">3.1.</span> <span class="toc-text">示例2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后"><span class="toc-number">4.</span> <span class="toc-text">最后</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android-工具-反编译/" title="android 工具 反编译">android 工具 反编译<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.github.com" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
     </ul>
- </div>
+</div>
 
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
 
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKklEQVR42u3aS27DMAwFwNz/0ummiwBt5EdKCWBptCpSw/Z4QfD3eMTn+XL+/vL6++t/391nfP931yw4GBgYt2U8h+fd4xPYzDX59RgYGOcwxsGxShqH0STslgM3BgYGxseuGf+CgYGBUX38ONWrlsHjp2BgYGD0itiomJxILr9Ui2NgYNyQkXfdv//3R+YbGBgYt2I8iycZCVTHljPv83sHDAyMrRkzI8y8EM1L4rz0/eetMDAwNmVUFx1mFr96rbcoYcXAwNiakY8VkwSu+uqr1sUwMDAwkuSsF6arSxiFjiAGBsZGjLVBs9r6zwvmctcQAwNjI0a1M9d7ZDVBrDbdMDAwTmDk+VWviV8NwVUeBgbGmYz5YWTvmiSIX3xQDAyM7Rirmmi9cNxrt0UjAQwMjE0Z1fDaC5S95t0FEgMDY2tGUmrmwfTROjMfAgMD4wTGzJJWb9w4n2L+w8PAwNiaUW27zy9n5GE0H6liYGCcxihMEoI9h2oQzxc1yk03DAyMjRj5K1aDcvKxqqkkBgbGaYxeuz9P8qojhzwEY2BgnMDotex7j68ucCwYQmBgYNyc0WviJyldPvjMS9mLBQsMDIxNGdXgW73R/Fg0L4MxMDD2ZvRa9nnRWx2CNp+CgYFxAKMaLqtNsWrTv/whMDAwMFpp3JjUWx27qMgxMDAwFgXH5OVyGAYGxjmMXhHbK3p7Af2ChIGBsTVjbYt/1fZHnlZiYGBszfgBiT/+9Zr+DFYAAAAASUVORK5CYII=" alt="微信分享二维码">
+  
+<div class="github-card">
+<p class="asidetitle">Github Card</p>
+<div class="github-card" data-github="https://github.com/tsdking" data-theme="medium"></div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
 </div>
 
 
 
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 我是老徐，感谢你的阅读. <br/>
+			这是我的博客，记录着收获.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1954587467" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/https://github.com/tsdking" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:xqflylg@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
 
-    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-<script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
+		
+		<a href="/about" target="_blank" title="老徐">老徐</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
 
-
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
 </script>
 
-<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
 
 
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
-</div>
-<template id="search-tpl">
-<li class="item">
-    <a href="{path}" class="waves-block waves-effect">
-        <div class="title ellipsis" title="{title}">{title}</div>
-        <div class="flex-row flex-middle">
-            <div class="tags ellipsis">
-                {tags}
-            </div>
-            <time class="flex-col time">{date}</time>
-        </div>
-    </a>
-</li>
-</template>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
 
-<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"laoxu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'laoxu';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
 
 
 
 
 
 
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
-
-<script>
-(function() {
-    var OriginTitile = document.title, titleTime;
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            document.title = '去哪里了！';
-            clearTimeout(titleTime);
-        } else {
-            document.title = '咦!又好了!';
-            titleTime = setTimeout(function() {
-                document.title = OriginTitile;
-            },2000);
-        }
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
     });
-})();
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
 </script>
 
 
 
-</body>
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
 </html>

@@ -1,26 +1,16 @@
-<!DOCTYPE html>
-<html>
+
+ <!DOCTYPE HTML>
+<html >
 <head>
+  <meta charset="UTF-8">
+  
+    <title>定时执行周期任务之JobScheduler,了解一下 | 老徐的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="老徐">
     
 
     
-
-    
-
-
-
-    <meta charset="utf-8">
-    
-    
-    
-    
-    <title>定时执行周期任务之JobScheduler,了解一下 | 老徐的博客 | 三流代码，一流Bug</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    
-    <meta name="theme-color" content="#3F51B5">
-    
-    
-    <meta name="keywords" content="android">
     <meta name="description" content="JobScheduler是Android5.0及以后的版本由系统提供的用于解决高效处理计划后台工作的系统服务即使应用程序进程当前未运行,计划的任务也会运行,框架自动处理为计划作业获得唤醒锁的工作,从而甚至在设备空闲时,工作也会继续进行.  应用场景- 后台周期性任务 - 非及时性工作如定期数据库数据更新 - 设备充电时">
 <meta name="keywords" content="android">
 <meta property="og:type" content="article">
@@ -32,163 +22,86 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="定时执行周期任务之JobScheduler,了解一下">
 <meta name="twitter:description" content="JobScheduler是Android5.0及以后的版本由系统提供的用于解决高效处理计划后台工作的系统服务即使应用程序进程当前未运行,计划的任务也会运行,框架自动处理为计划作业获得唤醒锁的工作,从而甚至在设备空闲时,工作也会继续进行.  应用场景- 后台周期性任务 - 非及时性工作如定期数据库数据更新 - 设备充电时需要执行的工作,一般是不需要经常执行但是比较耗时耗电的操作如上传一些资源,网络">
-    
-        <link rel="alternate" type="application/atom+xml" title="老徐的博客" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
-    <script>window.lazyScripts=[]</script>
 
-    <!-- custom head -->
     
-
+    <link rel="alternative" href="/atom.xml" title="老徐的博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-    <div id="loading" class="active"></div>
-
-    <aside id="menu" class="hide" >
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.jpg">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname">老徐</h5>
-          <a href="mailto:535567352@qq.com" title="535567352@qq.com" class="mail">535567352@qq.com</a>
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-            <li class="waves-block waves-effect">
-              <a href="/"  >
-                <i class="icon icon-lg icon-home"></i>
-                主页
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/archives"  >
-                <i class="icon icon-lg icon-archives"></i>
-                Archives
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/tags"  >
-                <i class="icon icon-lg icon-tags"></i>
-                Tags
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/categories"  >
-                <i class="icon icon-lg icon-th-list"></i>
-                Categories
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="https://github.com/tsdking" target="_blank" >
-                <i class="icon icon-lg icon-github"></i>
-                Github
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="http://www.weibo.com/xqflylg" target="_blank" >
-                <i class="icon icon-lg icon-weibo"></i>
-                Weibo
-              </a>
-            </li>
-        
-      </ul>
-    </div>
-  </div>
-</aside>
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">定时执行周期任务之JobScheduler,了解一下</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
-            <i class="icon icon-lg icon-share-alt"></i>
-        </a>
-        
-    </div>
-</header>
-<header class="content-header post-header">
-
-    <div class="container fade-scale">
-        <h1 class="title">定时执行周期任务之JobScheduler,了解一下</h1>
-        <h5 class="subtitle">
-            
-                <time datetime="2018-04-17T09:34:59.000Z" itemprop="datePublished" class="page-time">
-  2018-04-17
-</time>
-
-
-            
-        </h5>
-    </div>
-
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="老徐的博客" title="老徐的博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="老徐的博客">老徐的博客</a></h1>
+				<h2 class="blog-motto">永远不变的是变化</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:tsdking.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
     
-
-
-</header>
-
-
-<div class="container body-wrap">
+      <a href="/2018/04/17/jobscheduler/" title="定时执行周期任务之JobScheduler,了解一下" itemprop="url">定时执行周期任务之JobScheduler,了解一下</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="老徐" target="_blank" itemprop="author">老徐</a>
+		
+  <p class="article-time">
+    <time datetime="2018-04-17T09:34:59.000Z" itemprop="datePublished"> Published 2018-04-17</time>
     
-    <aside class="post-widget">
-        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#应用场景"><span class="post-toc-number">1.</span> <span class="post-toc-text">应用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#适用版本"><span class="post-toc-number">2.</span> <span class="post-toc-text">适用版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#优点"><span class="post-toc-number">3.</span> <span class="post-toc-text">优点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#缺点"><span class="post-toc-number">4.</span> <span class="post-toc-text">缺点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#看代码"><span class="post-toc-number">5.</span> <span class="post-toc-text">看代码</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#WorkJobService"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">WorkJobService</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#JobSchedulerActivity"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">JobSchedulerActivity</span></a></li></ol></li></ol>
-        </nav>
-    </aside>
-
-
-<article id="post-jobscheduler"
-  class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">定时执行周期任务之JobScheduler,了解一下</h1>
-        <div class="post-meta">
-            <time class="post-time" title="2018-04-17 17:34:59" datetime="2018-04-17T09:34:59.000Z"  itemprop="datePublished">2018-04-17</time>
-
-            
-
-
-            
-<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
-    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
-</span>
-
-
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <blockquote>
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用场景"><span class="toc-number">1.</span> <span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用版本"><span class="toc-number">2.</span> <span class="toc-text">适用版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缺点"><span class="toc-number">4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#看代码"><span class="toc-number">5.</span> <span class="toc-text">看代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WorkJobService"><span class="toc-number">5.1.</span> <span class="toc-text">WorkJobService</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JobSchedulerActivity"><span class="toc-number">5.2.</span> <span class="toc-text">JobSchedulerActivity</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<blockquote>
 <p>JobScheduler是Android5.0及以后的版本由系统提供的用于解决高效处理<strong>计划后台工作</strong>的<em>系统服务</em><br>即使应用程序进程当前未运行,计划的任务也会运行,框架自动处理为计划作业获得唤醒锁的工作,从而甚至在设备空闲时,工作也会继续进行.</p>
 </blockquote>
 <h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><pre><code>- 后台周期性任务
@@ -204,274 +117,403 @@
 <h2 id="看代码"><a href="#看代码" class="headerlink" title="看代码"></a>看代码</h2><h3 id="WorkJobService"><a href="#WorkJobService" class="headerlink" title="WorkJobService"></a>WorkJobService</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TargetApi</span>(Build.VERSION_CODES.LOLLIPOP)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WorkJobService</span> <span class="keyword">extends</span> <span class="title">JobService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MSG_JOB = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Handler mJobProcessor = <span class="keyword">new</span> Handler(<span class="keyword">new</span> Handler.Callback() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(msg.what==MSG_JOB)&#123;</span><br><span class="line">                JobParameters params = (JobParameters) msg.obj;</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 完成异步工作之后 必须触发jobFinished以使下一个计划任务运行</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                doSomething();</span><br><span class="line">                jobFinished(params, <span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"time:"</span> + System.currentTimeMillis(), Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onStartJob</span><span class="params">(JobParameters params)</span> </span>&#123;</span><br><span class="line">        mJobProcessor.sendMessageDelayed(</span><br><span class="line">                Message.obtain(mJobProcessor, MSG_JOB, params),</span><br><span class="line">                <span class="number">5000</span>);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 1.如果此处异步完成作业,false;</span></span><br><span class="line"><span class="comment">         * 2.如果需要执行更多后台工作,true;</span></span><br><span class="line"><span class="comment">         * 对于第二种情况必须调用jobFinished()以通知系统作业完成</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onStopJob</span><span class="params">(JobParameters params)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//停止作业时,必须取消挂起的作业</span></span><br><span class="line">        mJobProcessor.removeMessages(MSG_JOB);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * true计划作业</span></span><br><span class="line"><span class="comment">         * false删除作业</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>注意:不要忘记在清单文件中注册,JobService本身继承Service,和普通的service区别是需要加上这个权限 <code>android:permission=&quot;android.permission.BIND_JOB_SERVICE&quot;</code>,否则在执行计划任务时会产生异常,我们需要将此服务暴露给framework,因此Android要求通过<strong>BIND_JOB_SERVICE</strong>权限保护该服务,只有framework可以拥有该权限,它保护我们的服务不被其他应用程序访问,<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:testOnly</span>=<span class="string">"false"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span>&gt;</span></span><br><span class="line">        ......</span><br><span class="line">      <span class="tag">&lt;<span class="name">service</span> <span class="attr">android:name</span>=<span class="string">".WorkJobService"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:permission</span>=<span class="string">"android.permission.BIND_JOB_SERVICE"</span>/&gt;</span></span><br><span class="line">        ......</span><br><span class="line"><span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="JobSchedulerActivity"><a href="#JobSchedulerActivity" class="headerlink" title="JobSchedulerActivity"></a>JobSchedulerActivity</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JobSchedulerActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    JobScheduler jobScheduler;</span><br><span class="line">    <span class="keyword">int</span> interval = <span class="number">5000</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> JOB_ID = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> JobInfo mJobInfo;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@TargetApi</span>(Build.VERSION_CODES.LOLLIPOP)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_job_scheduler);</span><br><span class="line">        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);</span><br><span class="line">        mJobInfo = <span class="keyword">new</span> JobInfo.Builder(</span><br><span class="line">                JOB_ID,</span><br><span class="line">                <span class="keyword">new</span> ComponentName(getPackageName(), WorkJobService.class.getName())</span><br><span class="line">        )</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 表示应在给定时间间隔内定期运行作业,直到其被明确取消</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                .setPeriodic(interval)</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 描述作业运行必备的网络条件</span></span><br><span class="line"><span class="comment">                 * NETWORK_TYPE_NONE = 0 默认值,表示作业不需要网络访问</span></span><br><span class="line"><span class="comment">                 * NETWORK_TYPE_ANY = 1 需要网络连接</span></span><br><span class="line"><span class="comment">                 * NETWORK_TYPE_UNMETERED = 2 必须是wifi网络状态,否则不会触发作业</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 作业运行,必须时在设备充电状态</span></span><br><span class="line"><span class="comment">                 * 适合较少执行,但是比较耗电的任务</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                .setRequiresCharging(<span class="keyword">true</span>)</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 作业运行,必须时在设备未激活或睡眠状态</span></span><br><span class="line"><span class="comment">                 * 适合较少执行,但是比较耗电的任务</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                .setRequiresDeviceIdle(<span class="keyword">true</span>)</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 设置设备重启时,如何启动计划作业</span></span><br><span class="line"><span class="comment">                 * true 由framework自动启动计划作业</span></span><br><span class="line"><span class="comment">                 * false 由应用手动启动计划作业(默认)</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                .setPersisted(<span class="keyword">false</span>)</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 设置对于失败的作业如何何时重新计划使其再次运行</span></span><br><span class="line"><span class="comment">                 * 如:在资源(网络访问等)临时不可用时尽可能减少不必要的重试次数</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                .setBackoffCriteria(DEFAULT_INITIAL_BACKOFF_MILLIS, BACKOFF_POLICY_EXPONENTIAL)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@TargetApi</span>(Build.VERSION_CODES.LOLLIPOP)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 多次执行同一个任务返回同一个任务id,不会重复执行任务</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> result = jobScheduler.schedule(mJobInfo);</span><br><span class="line">        <span class="keyword">if</span> (result &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            Toast.makeText(<span class="keyword">this</span>, <span class="string">"失败"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            Toast.makeText(<span class="keyword">this</span>, <span class="string">"成功"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@TargetApi</span>(Build.VERSION_CODES.LOLLIPOP)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 任务id必须匹配传递给JobInfo的id,需要保存该id</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        jobScheduler.cancel(JOB_ID);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-        </div>
-
-        <blockquote class="post-copyright">
-    
-    <div class="content">
-        
-<span class="post-time">
-    Last updated: <time datetime="2018-04-17T11:44:14.184Z" itemprop="dateUpdated">2018-04-17 19:44:14</time>
-</span><br>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
 
 
-        
-        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/04/17/jobscheduler/" target="_blank" rel="external">http://tsdking.github.io/2018/04/17/jobscheduler/</a>
-        
-    </div>
-    
-    <footer>
-        <a href="http://tsdking.github.io">
-            <img src="/img/avatar.jpg" alt="老徐">
-            老徐
-        </a>
-    </footer>
-</blockquote>
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/android/">android</a>
+  </div>
 
-        
-
-
-        <div class="post-footer">
-            
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-
-
-            
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/17/jobscheduler/&title=《定时执行周期任务之JobScheduler,了解一下》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/17/jobscheduler/&title=《定时执行周期任务之JobScheduler,了解一下》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/17/jobscheduler/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《定时执行周期任务之JobScheduler,了解一下》 — 老徐的博客&url=http://tsdking.github.io/2018/04/17/jobscheduler/&via=http://tsdking.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/17/jobscheduler/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
 </div>
 
 
 
-        </div>
-    </div>
-
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/2018/04/18/alarmmanager/" id="post-prev" class="post-nav-link">
-        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">定时执行周期任务之AlarmManager，了解一下</h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/2018/04/16/sort-algorithm-1/" id="post-next" class="post-nav-link">
-        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">最快最简单的排序算法</h4>
-      </a>
-    </div>
-  
-</nav>
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://tsdking.github.io/2018/04/17/jobscheduler/" data-title="定时执行周期任务之JobScheduler,了解一下 | 老徐的博客" data-tsina="1954587467" class="share clearfix">
+	  </div>
+	
+	</div>
 
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</article>
-
-
-
-</div>
-
-        <footer class="footer">
-    <div class="top">
-        
-<p>
-    <span id="busuanzi_container_site_uv" style='display:none'>
-        站点总访客数：<span id="busuanzi_value_site_uv"></span>
-    </span>
-    <span id="busuanzi_container_site_pv" style='display:none'>
-        站点总访问量：<span id="busuanzi_value_site_pv"></span>
-    </span>
-</p>
-
-
-        <p>
-            
-                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
-            
-            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
-        </p>
-    </div>
-    <div class="bottom">
-        <p><span>老徐 &copy; 2017 - 2018</span>
-            <span>
-                
-                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
-            </span>
-        </p>
-    </div>
 </footer>
 
-    </main>
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2018/04/18/alarmmanager/" title="定时执行周期任务之AlarmManager，了解一下">
+  <strong>上一篇：</strong><br/>
+  <span>
+  定时执行周期任务之AlarmManager，了解一下</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2018/04/16/sort-algorithm-1/"  title="最快最简单的排序算法">
+ <strong>下一篇：</strong><br/> 
+ <span>最快最简单的排序算法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2018/04/17/jobscheduler/" data-title="定时执行周期任务之JobScheduler,了解一下" data-url="http://tsdking.github.io/2018/04/17/jobscheduler/"></div>
+</section>
+
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
 
 
 
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tsdking.github.io/2018/04/17/jobscheduler/&title=《定时执行周期任务之JobScheduler,了解一下》 — 老徐的博客&pic=http://tsdking.github.io/img/avatar.jpg" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tsdking.github.io/2018/04/17/jobscheduler/&title=《定时执行周期任务之JobScheduler,了解一下》 — 老徐的博客&source=这个家伙很懒，什么都没留下" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tsdking.github.io/2018/04/17/jobscheduler/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《定时执行周期任务之JobScheduler,了解一下》 — 老徐的博客&url=http://tsdking.github.io/2018/04/17/jobscheduler/&via=http://tsdking.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tsdking.github.io/2018/04/17/jobscheduler/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用场景"><span class="toc-number">1.</span> <span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用版本"><span class="toc-number">2.</span> <span class="toc-text">适用版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缺点"><span class="toc-number">4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#看代码"><span class="toc-number">5.</span> <span class="toc-text">看代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WorkJobService"><span class="toc-number">5.1.</span> <span class="toc-text">WorkJobService</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JobSchedulerActivity"><span class="toc-number">5.2.</span> <span class="toc-text">JobSchedulerActivity</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android-工具-反编译/" title="android 工具 反编译">android 工具 反编译<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.github.com" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
     </ul>
- </div>
+</div>
 
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
 
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACIklEQVR42u3aQW7EMAgF0N7/0tNtpSrRB5yqdp5Xo06U4XWBwPD1FZ/Pj3P/7dX5/fzV56tfWXAwMDC2ZSQ/X30m/0sOu//XYGBgvIFxlcGunsmDu8IkaT2JDQMDA2OSEJPEjYGBgfE04/4NSRuclJIYGBgYeaJMyr4koOTbB3txDAyMDRn5rfvff35kvoGBgbEV41M8vZKuWjiWo8LAwDiaMW9Bq0OC+6BH8WBgYLyAkbSpeQOZPFltlZubaxgYGJszeldXSXrtpew8EV9WuBgYGIcykiTYK+ySYee8AcbAwDibES0xFEu9JJkmIRbWLDAwMF7AmKyT9hLuqpUODAyM9zB6A4DJSCAfgvaSMgYGxtmMPM1N2t38mZyNgYFxKqMXYu9qbH4xV94WwcDAOIJRvd6qln3V8q5XkmJgYJzNqCa1eR36yJsxMDCOZiTJMfm2OgbIr/jLdS4GBsZxjFULEJP0Olm2wMDAeAOjF3pv7ywPvToWxcDAwOhdn/Wa2+rCRyHhYmBgHMfIF7nyN4wWvHrjAQwMjOMY+cVZMrCcl4lJKsfAwHgD41M8+avzQHsraOUgMDAwtmX0kl1ewCVJeVKYlmEYGBjbMtYue+UhJmUoBgYGRm+tYe1yWG9RDAMDA6NallXTay81Rx05BgYGRhB0cjHXKxYfT7gYGBj/npE0sRNYdZmsPATFwMA4mpG3jqvGlr2R5IKhJgYGxn6Mb76MS6nimtwNAAAAAElFTkSuQmCC" alt="微信分享二维码">
+  
+<div class="github-card">
+<p class="asidetitle">Github Card</p>
+<div class="github-card" data-github="https://github.com/tsdking" data-theme="medium"></div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
 </div>
 
 
 
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 我是老徐，感谢你的阅读. <br/>
+			这是我的博客，记录着收获.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1954587467" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/https://github.com/tsdking" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:xqflylg@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
 
-    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-<script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
+		
+		<a href="/about" target="_blank" title="老徐">老徐</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
 
-
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
 </script>
 
-<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
 
 
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
-</div>
-<template id="search-tpl">
-<li class="item">
-    <a href="{path}" class="waves-block waves-effect">
-        <div class="title ellipsis" title="{title}">{title}</div>
-        <div class="flex-row flex-middle">
-            <div class="tags ellipsis">
-                {tags}
-            </div>
-            <time class="flex-col time">{date}</time>
-        </div>
-    </a>
-</li>
-</template>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
 
-<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"laoxu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'laoxu';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
 
 
 
 
 
 
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
-
-<script>
-(function() {
-    var OriginTitile = document.title, titleTime;
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            document.title = '去哪里了！';
-            clearTimeout(titleTime);
-        } else {
-            document.title = '咦!又好了!';
-            titleTime = setTimeout(function() {
-                document.title = OriginTitile;
-            },2000);
-        }
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
     });
-})();
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
 </script>
 
 
 
-</body>
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
 </html>
