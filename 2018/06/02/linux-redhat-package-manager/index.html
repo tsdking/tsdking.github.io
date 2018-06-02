@@ -4,26 +4,24 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>IDEA-Unmapped Spring configuration files found解决办法 | 老徐的博客</title>
+    <title>RPM，Yum，systemd学习笔记 | 老徐的博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="老徐">
     
 
     
-    <meta name="description" content="问题描述打开IDEA，提示这样一个警告： 12警告标题：“Spring Configuration Check”警告内容：“Unmapped Spring configuration files found.Disable…Please Configure/setup Spring facet for modules:">
-<meta name="keywords" content="springboot">
+    <meta name="description" content="红帽软件包管理器RPM，类似windows的控制面板，会建立统一的数据库文件，详细记录软件信息并能够自动分析依赖关系，但并不能解决依赖冲突等问题；  常用的RPM命令   作用 命令     安装软件 rpm -ivh filename.rpm   升级软件 rpm -Uvh filename.rpm   卸载软件 r">
+<meta name="keywords" content="linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IDEA-Unmapped Spring configuration files found解决办法">
-<meta property="og:url" content="http://tsdking.github.io/2018/06/02/IDEA-Unmapped/index.html">
+<meta property="og:title" content="RPM，Yum，systemd学习笔记">
+<meta property="og:url" content="http://tsdking.github.io/2018/06/02/linux-redhat-package-manager/index.html">
 <meta property="og:site_name" content="老徐的博客">
-<meta property="og:description" content="问题描述打开IDEA，提示这样一个警告： 12警告标题：“Spring Configuration Check”警告内容：“Unmapped Spring configuration files found.Disable…Please Configure/setup Spring facet for modules:…” 解决办法【File】-&amp;gt;【Project Structure…】-&amp;">
-<meta property="og:image" content="http://s2tu.com/images/2018/06/02/2018-06-02_153253.png">
-<meta property="og:updated_time" content="2018-06-02T07:38:03.467Z">
+<meta property="og:description" content="红帽软件包管理器RPM，类似windows的控制面板，会建立统一的数据库文件，详细记录软件信息并能够自动分析依赖关系，但并不能解决依赖冲突等问题；  常用的RPM命令   作用 命令     安装软件 rpm -ivh filename.rpm   升级软件 rpm -Uvh filename.rpm   卸载软件 rpm -e filename.rpm   查询软件描述信息 rpm -qpi">
+<meta property="og:updated_time" content="2018-06-02T14:53:25.207Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IDEA-Unmapped Spring configuration files found解决办法">
-<meta name="twitter:description" content="问题描述打开IDEA，提示这样一个警告： 12警告标题：“Spring Configuration Check”警告内容：“Unmapped Spring configuration files found.Disable…Please Configure/setup Spring facet for modules:…” 解决办法【File】-&amp;gt;【Project Structure…】-&amp;">
-<meta name="twitter:image" content="http://s2tu.com/images/2018/06/02/2018-06-02_153253.png">
+<meta name="twitter:title" content="RPM，Yum，systemd学习笔记">
+<meta name="twitter:description" content="红帽软件包管理器RPM，类似windows的控制面板，会建立统一的数据库文件，详细记录软件信息并能够自动分析依赖关系，但并不能解决依赖冲突等问题；  常用的RPM命令   作用 命令     安装软件 rpm -ivh filename.rpm   升级软件 rpm -Uvh filename.rpm   卸载软件 rpm -e filename.rpm   查询软件描述信息 rpm -qpi">
 
     
     <link rel="alternative" href="/atom.xml" title="老徐的博客" type="application/atom+xml">
@@ -83,14 +81,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2018/06/02/IDEA-Unmapped/" title="IDEA-Unmapped Spring configuration files found解决办法" itemprop="url">IDEA-Unmapped Spring configuration files found解决办法</a>
+      <a href="/2018/06/02/linux-redhat-package-manager/" title="RPM，Yum，systemd学习笔记" itemprop="url">RPM，Yum，systemd学习笔记</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="老徐" target="_blank" itemprop="author">老徐</a>
 		
   <p class="article-time">
-    <time datetime="2018-06-02T07:27:42.000Z" itemprop="datePublished"> 发表于 2018-06-02</time>
+    <time datetime="2018-06-02T14:02:52.000Z" itemprop="datePublished"> 发表于 2018-06-02</time>
     
   </p>
 </header>
@@ -99,14 +97,163 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决办法"><span class="toc-number">2.</span> <span class="toc-text">解决办法</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用的RPM命令"><span class="toc-number">1.</span> <span class="toc-text">常用的RPM命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用的Yum命令"><span class="toc-number">2.</span> <span class="toc-text">常用的Yum命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#systemd初始化进程"><span class="toc-number">3.</span> <span class="toc-text">systemd初始化进程</span></a></li></ol>
 		
 		</div>
 		
-		<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>打开IDEA，提示这样一个警告：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">警告标题：“Spring Configuration Check”</span><br><span class="line">警告内容：“Unmapped Spring configuration files found.Disable…Please Configure/setup Spring facet for modules:…”</span><br></pre></td></tr></table></figure>
-<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>【File】-&gt;【Project Structure…】-&gt;【Facets】-&gt;【点击】“+” -&gt;【选择】Spring-&gt;【点击】module-&gt;【点击】OK按钮 -&gt;【点击】“+” -&gt;【选择】配置文件-&gt;【点击】OK按钮 -&gt; 【重启】IDEA。</p>
-<p><img src="http://s2tu.com/images/2018/06/02/2018-06-02_153253.png" alt="2018-06-02_153253.png"></p>
+		<blockquote>
+<p><strong>红帽软件包管理器RPM，类似windows的控制面板，会建立统一的数据库文件，详细记录软件信息并能够自动分析依赖关系，但并不能解决依赖冲突等问题；</strong></p>
+</blockquote>
+<h2 id="常用的RPM命令"><a href="#常用的RPM命令" class="headerlink" title="常用的RPM命令"></a>常用的RPM命令</h2><table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">安装软件</td>
+<td>rpm -ivh filename.rpm</td>
+</tr>
+<tr>
+<td style="text-align:left">升级软件</td>
+<td>rpm -Uvh filename.rpm</td>
+</tr>
+<tr>
+<td style="text-align:left">卸载软件</td>
+<td>rpm -e filename.rpm</td>
+</tr>
+<tr>
+<td style="text-align:left">查询软件描述信息</td>
+<td>rpm -qpi filename.rpm</td>
+</tr>
+<tr>
+<td style="text-align:left">列出软件文件信息</td>
+<td>rpm -qpl filename.rpm</td>
+</tr>
+<tr>
+<td style="text-align:left">查询文件属于哪个PRM</td>
+<td>rpm -qf filename</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Yum可以根据用户的需求分析出所需软件包及其相关依赖的关系，并自动从服务器下载安装到系统中；</strong></p>
+</blockquote>
+<h2 id="常用的Yum命令"><a href="#常用的Yum命令" class="headerlink" title="常用的Yum命令"></a>常用的Yum命令</h2><table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">列出所有仓库</td>
+<td>yum repolist all</td>
+</tr>
+<tr>
+<td style="text-align:left">列出仓库中所有软件包</td>
+<td>yum list all</td>
+</tr>
+<tr>
+<td style="text-align:left">查看软件包信息</td>
+<td>yum info 软件包名称</td>
+</tr>
+<tr>
+<td style="text-align:left">安装软件包</td>
+<td>yum install 软件包名称</td>
+</tr>
+<tr>
+<td style="text-align:left">重新安装软件包</td>
+<td>yum reinstall 软件包名称</td>
+</tr>
+<tr>
+<td style="text-align:left">升级软件包</td>
+<td>yum update 软件包名称</td>
+</tr>
+<tr>
+<td style="text-align:left">移除软件包</td>
+<td>yum remove 软件包名称</td>
+</tr>
+<tr>
+<td style="text-align:left">清除所有仓库缓存</td>
+<td>yum clean all</td>
+</tr>
+<tr>
+<td style="text-align:left">检查可更新的软件包</td>
+<td>yum check-update</td>
+</tr>
+<tr>
+<td style="text-align:left">查看系统中已安装的软件包组</td>
+<td>yum grouplist</td>
+</tr>
+<tr>
+<td style="text-align:left">安装指定 的软件包组</td>
+<td>yum groupinstall 软件包组</td>
+</tr>
+<tr>
+<td style="text-align:left">移除指定的软件包组</td>
+<td>yum groupremove 软件包组</td>
+</tr>
+<tr>
+<td style="text-align:left">查询指定的软件包组信息</td>
+<td>yum groupinfo 软件包组</td>
+</tr>
+</tbody>
+</table>
+<h2 id="systemd初始化进程"><a href="#systemd初始化进程" class="headerlink" title="systemd初始化进程"></a>systemd初始化进程</h2><blockquote>
+<p>Linux开机过程：BIOS-&gt;Boot Loader-&gt;加载系统内核-&gt;内核初始化-&gt;最后启动初始化进程systemd;<br>systemd作为linux系统的第一个进程，同时接管了syslogd，udev，cgroup的服务的工作，需要完成系统中初始化相关的工作</p>
+</blockquote>
+<p>如果想要将系统默认的运行目标修改为“多用户，无图形”，可以使用如下命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -sh  /lib/systemd/system/multi-user.target  /etc/systemd/system/default.target</span><br></pre></td></tr></table></figure></p>
+<p>即用<strong>ln</strong>命令把多用户模式目标文件连接到 <strong>/etc/systemd/system</strong>目录</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">作用</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">启动服务</td>
+<td>systemctl start foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">重启服务</td>
+<td>systemctl restart foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">停止服务</td>
+<td>systemctl stop foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">重新加载配置文件（不终止服务）</td>
+<td>systemctl reload foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">查看服务状态</td>
+<td>systemctl status foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">开机自动启动</td>
+<td>systemctl enable foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">开机不自启动</td>
+<td>systemctl disable foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">查看指定服务是否为开机启动</td>
+<td>systemctl is-enabled foo.service</td>
+</tr>
+<tr>
+<td style="text-align:left">查看各个级别下服务的启动禁用情况</td>
+<td>systemctl list-unit-files –type=service</td>
+</tr>
+</tbody>
+</table>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -115,7 +262,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/springboot/">springboot</a>
+  <span></span> <a href="/tags/linux/">linux</a>
   </div>
 
 </div>
@@ -124,7 +271,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://tsdking.github.io/2018/06/02/IDEA-Unmapped/" data-title="IDEA-Unmapped Spring configuration files found解决办法 | 老徐的博客" data-tsina="1954587467" class="share clearfix">
+	  <div data-url="http://tsdking.github.io/2018/06/02/linux-redhat-package-manager/" data-title="RPM，Yum，systemd学习笔记 | 老徐的博客" data-tsina="1954587467" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -137,19 +284,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2018/06/02/linux-redhat-package-manager/" title="RPM，Yum，systemd学习笔记">
-  <strong>上一篇：</strong><br/>
-  <span>
-  RPM，Yum，systemd学习笔记</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2018/04/20/apkuncode/"  title="Android反编译的简单总结">
+<a href="/2018/06/02/IDEA-Unmapped/"  title="IDEA-Unmapped Spring configuration files found解决办法">
  <strong>下一篇：</strong><br/> 
- <span>Android反编译的简单总结
+ <span>IDEA-Unmapped Spring configuration files found解决办法
 </span>
 </a>
 </div>
@@ -158,7 +297,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2018/06/02/IDEA-Unmapped/" data-title="IDEA-Unmapped Spring configuration files found解决办法" data-url="http://tsdking.github.io/2018/06/02/IDEA-Unmapped/"></div>
+	<div class="ds-thread" data-thread-key="2018/06/02/linux-redhat-package-manager/" data-title="RPM，Yum，systemd学习笔记" data-url="http://tsdking.github.io/2018/06/02/linux-redhat-package-manager/"></div>
 </section>
 
 
@@ -176,7 +315,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决办法"><span class="toc-number">2.</span> <span class="toc-text">解决办法</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用的RPM命令"><span class="toc-number">1.</span> <span class="toc-text">常用的RPM命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用的Yum命令"><span class="toc-number">2.</span> <span class="toc-text">常用的Yum命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#systemd初始化进程"><span class="toc-number">3.</span> <span class="toc-text">systemd初始化进程</span></a></li></ol>
  
   </div>
 
