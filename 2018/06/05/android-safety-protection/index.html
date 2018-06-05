@@ -1,0 +1,528 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>android_safety_protection | 老徐的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="老徐">
+    
+
+    
+    <meta name="description" content="重打包校验签名,签名的hashCode是唯一值 123456789101112131415public static int getSignature(String packageName) &amp;#123;       PackageManager packageManager = this.getPackage">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android_safety_protection">
+<meta property="og:url" content="http://tsdking.github.io/2018/06/05/android-safety-protection/index.html">
+<meta property="og:site_name" content="老徐的博客">
+<meta property="og:description" content="重打包校验签名,签名的hashCode是唯一值 123456789101112131415public static int getSignature(String packageName) &amp;#123;       PackageManager packageManager = this.getPackageManager();       PackageInfo info = null;">
+<meta property="og:updated_time" content="2018-06-05T02:09:21.680Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="android_safety_protection">
+<meta name="twitter:description" content="重打包校验签名,签名的hashCode是唯一值 123456789101112131415public static int getSignature(String packageName) &amp;#123;       PackageManager packageManager = this.getPackageManager();       PackageInfo info = null;">
+
+    
+    <link rel="alternative" href="/atom.xml" title="老徐的博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="老徐的博客" title="老徐的博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="老徐的博客">老徐的博客</a></h1>
+				<h2 class="blog-motto">永远不变的是变化</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:tsdking.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/06/05/android-safety-protection/" title="android_safety_protection" itemprop="url">android_safety_protection</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="老徐" target="_blank" itemprop="author">老徐</a>
+		
+  <p class="article-time">
+    <time datetime="2018-06-05T02:07:49.000Z" itemprop="datePublished"> Published 2018-06-05</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#重打包"><span class="toc-number">1.</span> <span class="toc-text">重打包</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#模拟器"><span class="toc-number">2.</span> <span class="toc-text">模拟器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反编译"><span class="toc-number">3.</span> <span class="toc-text">反编译</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Proguard混淆"><span class="toc-number">3.1.</span> <span class="toc-text">Proguard混淆</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本语法："><span class="toc-number">3.1.1.</span> <span class="toc-text">基本语法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实际代码："><span class="toc-number">3.1.2.</span> <span class="toc-text">实际代码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-number">3.1.3.</span> <span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加固"><span class="toc-number">3.2.</span> <span class="toc-text">加固</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h1 id="重打包"><a href="#重打包" class="headerlink" title="重打包"></a>重打包</h1><p>校验签名,签名的hashCode是唯一值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getSignature</span><span class="params">(String packageName)</span> </span>&#123;</span><br><span class="line">       PackageManager packageManager = <span class="keyword">this</span>.getPackageManager();</span><br><span class="line">       PackageInfo info = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">int</span> sig = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);</span><br><span class="line">           Signature[] signatures = info.signatures;</span><br><span class="line">           sig = signatures[<span class="number">0</span>].hashCode();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">           sig = <span class="number">0</span>;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> sig;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="模拟器"><a href="#模拟器" class="headerlink" title="模拟器"></a>模拟器</h1><p>监测设备是否是模拟器</p>
+<ul>
+<li>检测模拟器上的几个特殊文件</li>
+<li>检测模拟器上的特殊号码</li>
+<li>检测设备IDS是不是“000000000000000”</li>
+<li>检测是否还有传感器、蓝牙</li>
+<li>检测手机上才有的硬件信息</li>
+<li>检测手机的运营商</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 检查IDS</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">chechDeviceIDS</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">       <span class="meta">@SuppressLint</span>(<span class="string">"ServiceCast"</span>)</span><br><span class="line">       TelephonyManager telecomManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);</span><br><span class="line">       <span class="meta">@SuppressLint</span>(<span class="string">"MissingPermission"</span>)</span><br><span class="line">       String deviceId = telecomManager.getDeviceId();</span><br><span class="line">       <span class="keyword">if</span> (deviceId.equalsIgnoreCase(DEVICE_ID)) &#123;</span><br><span class="line">           Log.e(TAG, <span class="string">"chechDeviceIDS=="</span> + DEVICE_ID);</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 检查模拟器特有的文件</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">chechDeviceFile</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; DEVICE_FILE.length; i++) &#123;</span><br><span class="line">           String file_name = DEVICE_FILE[i];</span><br><span class="line">           File qemu_file = <span class="keyword">new</span> File(file_name);</span><br><span class="line">           <span class="keyword">if</span> (qemu_file.exists()) &#123;</span><br><span class="line">               Log.e(TAG, <span class="string">"chechDeviceFile=="</span> + <span class="keyword">true</span>);</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 检查特有电话号码</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">chechDevicePhone</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">       <span class="meta">@SuppressLint</span>(<span class="string">"ServiceCast"</span>)</span><br><span class="line">       TelephonyManager telecomManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);</span><br><span class="line">       <span class="meta">@SuppressLint</span>(<span class="string">"MissingPermission"</span>)</span><br><span class="line">       String phoneNumber = telecomManager.getLine1Number();</span><br><span class="line">       <span class="keyword">for</span> (String phone : DEVICE_PHONE) &#123;</span><br><span class="line">           <span class="keyword">if</span> (phone.equalsIgnoreCase(phoneNumber)) &#123;</span><br><span class="line">               Log.e(TAG, <span class="string">"chechDevicePhone=="</span> + phoneNumber);</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 检查特是否含有设备</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">chechDeviceBuild</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">       String board = Build.BOARD;</span><br><span class="line">       String bootloader = Build.BOOTLOADER;</span><br><span class="line">       String brand = Build.BRAND;</span><br><span class="line">       String device = Build.DEVICE;</span><br><span class="line">       String hardware = Build.HARDWARE;</span><br><span class="line">       String model = Build.MODEL;</span><br><span class="line">       String product = Build.PRODUCT;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (board.equalsIgnoreCase(<span class="string">"unknown"</span>) || bootloader.equalsIgnoreCase(<span class="string">"unknown"</span>)</span><br><span class="line">               || brand.equalsIgnoreCase(<span class="string">"generic"</span>) || model.equalsIgnoreCase(<span class="string">"sdk"</span>)</span><br><span class="line">               || product.equalsIgnoreCase(<span class="string">"goldfish"</span>)) &#123;</span><br><span class="line">           Log.e(TAG, <span class="string">"chechDeviceBuild=="</span> + <span class="string">"find emulatorBuild"</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="反编译"><a href="#反编译" class="headerlink" title="反编译"></a>反编译</h1><h2 id="Proguard混淆"><a href="#Proguard混淆" class="headerlink" title="Proguard混淆"></a>Proguard混淆</h2><blockquote>
+<p>Proguard 是一个混淆代码的开源项目，Proguard主要的作用是混淆，当然他还有着对字节码进行缩减体积、优化等功能，我主要关注的是混淆</p>
+</blockquote>
+<h3 id="基本语法："><a href="#基本语法：" class="headerlink" title="基本语法："></a><strong>基本语法：</strong></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">-include &#123;filename&#125;    #从给定的文件中读取配置参数   </span><br><span class="line">-basedirectory &#123;directoryname&#125;    #指定基础目录为以后相对的档案名称   </span><br><span class="line">-injars &#123;class_path&#125;    #指定要处理的应用程序jar,war,ear和目录   </span><br><span class="line">-outjars &#123;class_path&#125;    #指定处理完后要输出的jar,war,ear和目录的名称   </span><br><span class="line">-libraryjars &#123;classpath&#125;    #指定要处理的应用程序jar,war,ear和目录所需要的程序库文件   </span><br><span class="line">-dontskipnonpubliclibraryclasses    #指定不去忽略非公共的库类。   </span><br><span class="line">-dontskipnonpubliclibraryclassmembers    #指定不去忽略包可见的库类的成员。  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#保留选项   </span><br><span class="line">-keep &#123;Modifier&#125; &#123;class_specification&#125;    #保护指定的类文件和类的成员   </span><br><span class="line">-keepclassmembers &#123;modifier&#125; &#123;class_specification&#125;    #保护指定类的成员，如果此类受到保护他们会保护的更好  </span><br><span class="line">-keepclasseswithmembers &#123;class_specification&#125;    #保护指定的类和类的成员，但条件是所有指定的类和类成员是要存在。   </span><br><span class="line">-keepnames &#123;class_specification&#125;    #保护指定的类和类的成员的名称（如果他们不会压缩步骤中删除）   </span><br><span class="line">-keepclassmembernames &#123;class_specification&#125;    #保护指定的类的成员的名称（如果他们不会压缩步骤中删除）   </span><br><span class="line">-keepclasseswithmembernames &#123;class_specification&#125;    #保护指定的类和类的成员的名称，如果所有指定的类成员出席（在压缩步骤之后）   </span><br><span class="line">-printseeds &#123;filename&#125;    #列出类和类的成员-keep选项的清单，标准输出到给定的文件   </span><br><span class="line"></span><br><span class="line">#压缩   </span><br><span class="line">-dontshrink    #不压缩输入的类文件   </span><br><span class="line">-printusage &#123;filename&#125;   </span><br><span class="line">-whyareyoukeeping &#123;class_specification&#125;       </span><br><span class="line"></span><br><span class="line">#优化   </span><br><span class="line">-dontoptimize    #不优化输入的类文件   </span><br><span class="line">-assumenosideeffects &#123;class_specification&#125;    #优化时假设指定的方法，没有任何副作用   </span><br><span class="line">-allowaccessmodification    #优化时允许访问并修改有修饰符的类和类的成员   </span><br><span class="line"></span><br><span class="line">#混淆   </span><br><span class="line">-dontobfuscate    #不混淆输入的类文件   </span><br><span class="line">-printmapping &#123;filename&#125;   </span><br><span class="line">-applymapping &#123;filename&#125;    #重用映射增加混淆   </span><br><span class="line"></span><br><span class="line">-obfuscationdictionary &#123;filename&#125;    #使用给定文件中的关键字作为要混淆方法的名称  </span><br><span class="line">#指定外部模糊字典</span><br><span class="line">-obfuscationdictionary dictionary.txt</span><br><span class="line">#指定class模糊字典</span><br><span class="line">#-classobfuscationdictionary filename</span><br><span class="line">#指定package模糊字典</span><br><span class="line">#-packageobfuscationdictionary filename</span><br><span class="line"></span><br><span class="line">-overloadaggressively    #混淆时应用侵入式重载   </span><br><span class="line">-useuniqueclassmembernames    #确定统一的混淆类的成员名称来增加混淆   </span><br><span class="line">-flattenpackagehierarchy &#123;package_name&#125;    #重新包装所有重命名的包并放在给定的单一包中   </span><br><span class="line">-repackageclass &#123;package_name&#125;   # 重新包装所有重命名的类文件中放在给定的单一包中   </span><br><span class="line">-dontusemixedcaseclassnames    #混淆时不会产生形形色色的类名   </span><br><span class="line">-keepattributes &#123;attribute_name,...&#125;    #保护给定的可选属性，例如LineNumberTable, LocalVariableTable, SourceFile, Deprecated, Synthetic, Signature, and   </span><br><span class="line"></span><br><span class="line">#InnerClasses.   </span><br><span class="line">-renamesourcefileattribute &#123;string&#125;    #设置源文件中给定的字符串常量</span><br></pre></td></tr></table></figure>
+<h3 id="实际代码："><a href="#实际代码：" class="headerlink" title="实际代码："></a><strong>实际代码：</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">-ignorewarnings                     # 忽略警告，避免打包时某些警告出现  </span><br><span class="line">-optimizationpasses 5               # 指定代码的压缩级别  </span><br><span class="line">-dontusemixedcaseclassnames         # 是否使用大小写混合  </span><br><span class="line">-dontskipnonpubliclibraryclasses    # 是否混淆第三方jar  </span><br><span class="line">-dontpreverify                      # 混淆时是否做预校验  </span><br><span class="line">-verbose                            # 混淆时是否记录日志  </span><br><span class="line">-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*        # 混淆时所采用的算法  </span><br><span class="line"></span><br><span class="line">-libraryjars   libs/treecore.jar  </span><br><span class="line"></span><br><span class="line">-dontwarn android.support.v4.**     #缺省proguard 会检查每一个引用是否正确，但是第三方库里面往往有些不会用到的类，没有正确引用。如果不配置的话，系统就会报错。  </span><br><span class="line">-dontwarn android.os.**  </span><br><span class="line">-keep class android.support.v4.** &#123; *; &#125;        # 保持哪些类不被混淆  </span><br><span class="line">-keep class com.baidu.** &#123; *; &#125;    </span><br><span class="line">-keep class vi.com.gdi.bgl.android.**&#123;*;&#125;  </span><br><span class="line">-keep class android.os.**&#123;*;&#125;  </span><br><span class="line"></span><br><span class="line">-keep interface android.support.v4.app.** &#123; *; &#125;    </span><br><span class="line">-keep public class * extends android.support.v4.**    </span><br><span class="line">-keep public class * extends android.app.Fragment  </span><br><span class="line"></span><br><span class="line">-keep public class * extends android.app.Activity  </span><br><span class="line">-keep public class * extends android.app.Application  </span><br><span class="line">-keep public class * extends android.app.Service  </span><br><span class="line">-keep public class * extends android.content.BroadcastReceiver  </span><br><span class="line">-keep public class * extends android.content.ContentProvider  </span><br><span class="line">-keep public class * extends android.support.v4.widget  </span><br><span class="line">-keep public class * extends com.sqlcrypt.database  </span><br><span class="line">-keep public class * extends com.sqlcrypt.database.sqlite  </span><br><span class="line">-keep public class * extends com.treecore.**  </span><br><span class="line">-keep public class * extends de.greenrobot.dao.**  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-keepclasseswithmembernames class * &#123;       # 保持 native 方法不被混淆  </span><br><span class="line">   native &lt;methods&gt;;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">-keepclasseswithmembers class * &#123;            # 保持自定义控件类不被混淆  </span><br><span class="line">   public &lt;init&gt;(android.content.Context, android.util.AttributeSet);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">-keepclasseswithmembers class * &#123;            # 保持自定义控件类不被混淆  </span><br><span class="line">   public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">-keepclassmembers class * extends android.app.Activity &#123; //保持类成员  </span><br><span class="line">  public void *(android.view.View);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">-keepclassmembers enum * &#123;                  # 保持枚举 enum 类不被混淆  </span><br><span class="line">   public static **[] values();  </span><br><span class="line">   public static ** valueOf(java.lang.String);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">-keep class * implements android.os.Parcelable &#123;    # 保持 Parcelable 不被混淆  </span><br><span class="line"> public static final android.os.Parcelable$Creator *;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">-keep class MyClass;                              # 保持自己定义的类不被混淆</span><br></pre></td></tr></table></figure>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p><strong>不能混淆的情况</strong></p>
+<ul>
+<li>四大组件由于在Mainfest中注册了，所以不能被混淆</li>
+<li>jin调用的Java的接口方法</li>
+<li>系统接口方法</li>
+<li>R文件的混淆可能会导致引用错误（如果有地方使用反射机制，R文件被混淆之后就会找不到资源）</li>
+<li>第三方库指定不能混淆的类</li>
+</ul>
+<h2 id="加固"><a href="#加固" class="headerlink" title="加固"></a>加固</h2><p>略</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/android/">android</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://tsdking.github.io/2018/06/05/android-safety-protection/" data-title="android_safety_protection | 老徐的博客" data-tsina="1954587467" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2018/06/02/linux-redhat-package-manager/"  title="RPM，Yum，systemd学习笔记">
+ <strong>下一篇：</strong><br/> 
+ <span>RPM，Yum，systemd学习笔记
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2018/06/05/android-safety-protection/" data-title="android_safety_protection" data-url="http://tsdking.github.io/2018/06/05/android-safety-protection/"></div>
+</section>
+
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#重打包"><span class="toc-number">1.</span> <span class="toc-text">重打包</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#模拟器"><span class="toc-number">2.</span> <span class="toc-text">模拟器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反编译"><span class="toc-number">3.</span> <span class="toc-text">反编译</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Proguard混淆"><span class="toc-number">3.1.</span> <span class="toc-text">Proguard混淆</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本语法："><span class="toc-number">3.1.1.</span> <span class="toc-text">基本语法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实际代码："><span class="toc-number">3.1.2.</span> <span class="toc-text">实际代码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-number">3.1.3.</span> <span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加固"><span class="toc-number">3.2.</span> <span class="toc-text">加固</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/springboot/" title="springboot">springboot<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/linux/" title="linux">linux<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.github.com" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  
+<div class="github-card">
+<p class="asidetitle">Github Card</p>
+<div class="github-card" data-github="https://github.com/tsdking" data-theme="medium"></div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 我是老徐，感谢你的阅读. <br/>
+			这是我的博客，记录着收获.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1954587467" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/https://github.com/tsdking" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:xqflylg@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
+		
+		<a href="/about" target="_blank" title="老徐">老徐</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"laoxu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'laoxu';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
