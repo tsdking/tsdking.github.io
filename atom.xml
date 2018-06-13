@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tsdking.github.io/"/>
-  <updated>2018-06-05T02:16:03.956Z</updated>
+  <updated>2018-06-13T09:25:26.000Z</updated>
   <id>http://tsdking.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何把项目从SVN迁移到GIT,同时保留提交记录等信息</title>
+    <link href="http://tsdking.github.io/2018/06/13/project-svn-to-git/"/>
+    <id>http://tsdking.github.io/2018/06/13/project-svn-to-git/</id>
+    <published>2018-06-13T07:59:15.000Z</published>
+    <updated>2018-06-13T09:25:26.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>由于项目发展规划需求,需要把原来在svn上的代码迁移到gitlab仓库,同时需要保留原提交记录等关键信息,由于这样的需求并不常见,所以记录一下具体的操作流程,以免以后遇到再做重复工作;</p></blockquote><h2 id="1-创建一个文件夹如gitRepo-进入该文件执行如下命令"><a href="#1-创建一个文件夹如gitRepo-进入该文件执行如下命令" class="headerlink" title="1.创建一个文件夹如gitRepo,进入该文件执行如下命令"></a>1.创建一个文件夹如gitRepo,进入该文件执行如下命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git svn <span class="built_in">clone</span> --stdlayout &#123;your project<span class="string">'s svn url&#125;</span></span><br><span class="line"><span class="string">#如:git svn clone --stdlayout svn://svnserver/prodemo</span></span><br></pre></td></tr></table></figure><p><img src="http://s2tu.com/images/2018/06/13/2018-06-13_163655.png" alt="2018-06-13_163655.png"></p><p>上述命令执行后,可能需要认证即需要输入用户名及密码,此时按照提示操作即可,此外该命令执行比较慢,因为它是从项目第一个版本的第一条记录开始clone,并有大量log输出,没意义等待执行完毕即可,这个过程可以去喝杯茶;</p><h2 id="2-进入clone下来的项目目录"><a href="#2-进入clone下来的项目目录" class="headerlink" title="2.进入clone下来的项目目录"></a>2.进入clone下来的项目目录</h2><p>即有.git文件夹的那个,执行如下命令</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br></pre></td></tr></table></figure><p>查看远程仓库,如果有的话先删掉它,因为要重新设置远程仓库地址,以免有干扰</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote rm origin</span><br></pre></td></tr></table></figure><h2 id="3-添加git远程仓库地址"><a href="#3-添加git远程仓库地址" class="headerlink" title="3.添加git远程仓库地址"></a>3.添加git远程仓库地址</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@x.x.x.x/project-name.git</span><br></pre></td></tr></table></figure><h2 id="4-推送到远程仓库"><a href="#4-推送到远程仓库" class="headerlink" title="4.推送到远程仓库"></a>4.推送到远程仓库</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit</span><br><span class="line">git push -u origin master</span><br><span class="line"><span class="comment">#或者</span></span><br><span class="line">git push -u origin --all</span><br><span class="line">git push -u origin --tags</span><br></pre></td></tr></table></figure><h2 id="5-Congratulations-完成了"><a href="#5-Congratulations-完成了" class="headerlink" title="5.Congratulations,完成了!"></a>5.Congratulations,完成了!</h2><p><img src="http://s2tu.com/images/2018/06/13/2018-06-13_170837.png" alt="2018-06-13_170837.png"></p><h2 id="6-补充一点"><a href="#6-补充一点" class="headerlink" title="6.补充一点"></a>6.补充一点</h2><p>拉取远程仓库全部分支,并创建本地对应分支</p><h3 id="git命令查看所有远程分支"><a href="#git命令查看所有远程分支" class="headerlink" title="git命令查看所有远程分支"></a>git命令查看所有远程分支</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -r</span><br></pre></td></tr></table></figure><h3 id="拉取远程分支并创建本地分支"><a href="#拉取远程分支并创建本地分支" class="headerlink" title="拉取远程分支并创建本地分支"></a>拉取远程分支并创建本地分支</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b branchName origin/branchName</span><br><span class="line"><span class="comment">#如 git checkout -b dev origin/dev</span></span><br></pre></td></tr></table></figure><p>或者<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin branchName:branchName</span><br></pre></td></tr></table></figure></p><p>两者的区别就是第二种fetch不会自动切换到对应的分支,需要手动执行 <code>git checkout branchName</code></p><hr><p>参考链接:</p><p>1.<a href="https://www.2cto.com/kf/201712/708272.html" target="_blank" rel="noopener">SVN项目迁移到Git上(并带有完整的提交记录)</a></p><p>2.<a href="https://www.jianshu.com/p/e6be6f76b21c" target="_blank" rel="noopener">从SVN迁移代码到Git实践总结</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;由于项目发展规划需求,需要把原来在svn上的代码迁移到gitlab仓库,同时需要保留原提交记录等关键信息,由于这样的需求并不常见,所以记录一下具体的操作流程,以免以后遇到再做重复工作;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;1-创建一
+      
+    
+    </summary>
+    
+    
+      <category term="android" scheme="http://tsdking.github.io/tags/android/"/>
+    
+  </entry>
   
   <entry>
     <title>Android安全防护</title>
