@@ -1,112 +1,188 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="老徐的博客">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://tsdking.github.io">
+    <!--SEO-->
 
- <!DOCTYPE HTML>
-<html >
-<head>
-  <meta charset="UTF-8">
-  
-    <title>Android反编译的简单总结 | 老徐的博客</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
-    
-    <meta name="author" content="老徐">
-    
+<meta name="description" content="这个家伙很懒，什么都没留下">
+
+
+
+<meta name="keywords" content="java">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+
+<title>Android反编译的简单总结 | 老徐的博客</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="老徐的博客" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
 
     
-    <meta name="description" content="Android反编译的简单总结准备 apktool.jar   安卓apk反编译神器,主要作用于资源文件,清单文件等,也可用于jar;解码\构建 双向全能,用过的都说好.   apktool.bat   一段脚本,结合apktool.jar使用   Java 7 (JRE 1.7)及以上,使用java -version">
-<meta name="keywords" content="android">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Android反编译的简单总结">
-<meta property="og:url" content="http://tsdking.github.io/2018/04/20/apkuncode/index.html">
-<meta property="og:site_name" content="老徐的博客">
-<meta property="og:description" content="Android反编译的简单总结准备 apktool.jar   安卓apk反编译神器,主要作用于资源文件,清单文件等,也可用于jar;解码\构建 双向全能,用过的都说好.   apktool.bat   一段脚本,结合apktool.jar使用   Java 7 (JRE 1.7)及以上,使用java -version查看 dex2jar   用于android的将classes.dex转换成ja">
-<meta property="og:image" content="http://www.wailian.work/images/2018/04/21/2018-04-22_112450.png">
-<meta property="og:image" content="http://www.wailian.work/images/2018/04/21/2018-04-22_112631.png">
-<meta property="og:image" content="http://www.wailian.work/images/2018/04/23/2018-04-23_175346.png">
-<meta property="og:image" content="http://www.wailian.work/images/2018/04/23/2018-04-23_181150.png">
-<meta property="og:updated_time" content="2018-05-12T10:47:00.169Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android反编译的简单总结">
-<meta name="twitter:description" content="Android反编译的简单总结准备 apktool.jar   安卓apk反编译神器,主要作用于资源文件,清单文件等,也可用于jar;解码\构建 双向全能,用过的都说好.   apktool.bat   一段脚本,结合apktool.jar使用   Java 7 (JRE 1.7)及以上,使用java -version查看 dex2jar   用于android的将classes.dex转换成ja">
-<meta name="twitter:image" content="http://www.wailian.work/images/2018/04/21/2018-04-22_112450.png">
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
 
     
-    <link rel="alternative" href="/atom.xml" title="老徐的博客" type="application/atom+xml">
+	<div class="hide">
+		<script type="text/javascript">
+			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+	</div>
+
+
+
+
+
+
     
-    
-    <link rel="icon" href="/img/favicon.ico">
-    
-    
-    <link rel="apple-touch-icon" href="/img/jacman.jpg">
-    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
-    
-    <link rel="stylesheet" href="/css/style.css">
+
 </head>
 
-  <body>
-    <header>
-      
-<div>
-		
-			<div id="imglogo">
-				<a href="/"><img src="/img/logo.png" alt="老徐的博客" title="老徐的博客"/></a>
-			</div>
-			
-			<div id="textlogo">
-				<h1 class="site-name"><a href="/" title="老徐的博客">老徐的博客</a></h1>
-				<h2 class="blog-motto">永远不变的是变化</h2>
-			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
-			</a></div>
-			<nav class="animated">
-				<ul>
-					<ul>
-					 
-						<li><a href="/">主页</a></li>
-					
-						<li><a href="/archives">归档</a></li>
-					
-						<li><a href="/about">关于</a></li>
-					
-					<li>
- 					
-					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
-						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
-						<input type="hidden" name="q" value="site:tsdking.github.io">
-					</form>
-					
-					</li>
-				</ul>
-			</nav>			
-</div>
-    </header>
-    <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
-  
-	<article itemprop="articleBody"> 
-		<header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2018/04/20/apkuncode/" title="Android反编译的简单总结" itemprop="url">Android反编译的简单总结</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="老徐" target="_blank" itemprop="author">老徐</a>
-		
-  <p class="article-time">
-    <time datetime="2018-04-19T17:34:59.000Z" itemprop="datePublished"> 發表於 2018-04-20</time>
-    
-  </p>
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="老徐">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题" class="img-responsive center-block">
+            
+    	</div>
+    </div>
 </header>
-	<div class="article-content">
-		
-		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目錄</strong>
-		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android反编译的简单总结"><span class="toc-number">1.</span> <span class="toc-text">Android反编译的简单总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备"><span class="toc-number">1.1.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">1.2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用法"><span class="toc-number">1.3.</span> <span class="toc-text">用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Apktool"><span class="toc-number">1.3.1.</span> <span class="toc-text">Apktool</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#解码"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">解码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#重新构建"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">重新构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#补充"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">补充</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dex2jar"><span class="toc-number">1.3.2.</span> <span class="toc-text">Dex2jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JD-GUI"><span class="toc-number">1.3.3.</span> <span class="toc-text">JD-GUI</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Google开源的神器ClassyShark"><span class="toc-number">1.4.</span> <span class="toc-text">Google开源的神器ClassyShark</span></a></li></ol></li></ol>
-		
-		</div>
-		
-		<h1 id="Android反编译的简单总结"><a href="#Android反编译的简单总结" class="headerlink" title="Android反编译的简单总结"></a>Android反编译的简单总结</h1><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://tsdking.github.io">老徐的博客</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/fore-end/"><i class="fa "></i>前端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/back-end/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/tools/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Android反编译的简单总结">
+            
+	            Android反编译的简单总结
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/ ">
+             
+        </a>
+    </span>
+    
+
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/android" title="android">
+                        android
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2018/04/20</span>
+        </span>
+        
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="Android反编译的简单总结"><a href="#Android反编译的简单总结" class="headerlink" title="Android反编译的简单总结"></a>Android反编译的简单总结</h1><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
 <li><a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool.jar</a></li>
 </ul>
 <blockquote>
@@ -144,7 +220,7 @@
 <li>复制如下脚本,并另存为<code>apktool.bat</code></li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="keyword">if</span> <span class="string">"%PATH_BASE%"</span> == <span class="string">""</span> <span class="built_in">set</span> PATH_BASE=%PATH%</span><br><span class="line"><span class="built_in">set</span> PATH=%CD%;%PATH_BASE%;</span><br><span class="line">chcp 65001 2&gt;nul &gt;nul</span><br><span class="line">java -jar -Duser.language=en -Dfile.encoding=UTF8 <span class="string">"%~dp0\apktool.jar"</span> %*</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="2">
 <li>下载最新版的<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool</a></li>
 <li>把下载好的jar重命名为<code>apktool.jar</code></li>
 <li>把上述两个文件<code>apktool.bat</code> &amp; <code>apktool.jar</code>放到同一个文件夹下,如<code>C:\windows</code></li>
@@ -158,7 +234,7 @@
 <li>复制如下脚本,并另存为<code>apktool</code></li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="keyword">if</span> <span class="string">"%PATH_BASE%"</span> == <span class="string">""</span> <span class="built_in">set</span> PATH_BASE=%PATH%</span><br><span class="line"><span class="built_in">set</span> PATH=%CD%;%PATH_BASE%;</span><br><span class="line">chcp 65001 2&gt;nul &gt;nul</span><br><span class="line">java -jar -Duser.language=en -Dfile.encoding=UTF8 <span class="string">"%~dp0\apktool.jar"</span> %*</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="2">
 <li>下载最新版的<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/" target="_blank" rel="noopener">apktool</a></li>
 <li>把下载好的jar重命名为<code>apktool.jar</code></li>
 <li>把上述两个文件<code>apktool</code> &amp; <code>apktool.jar</code>放到同一个文件夹下,如<code>/usr/local/bin</code></li>
@@ -329,350 +405,117 @@
 <p>用法:</p>
 <p>下载 <a href="https://github.com/google/android-classyshark/releases" target="_blank" rel="noopener">最新的JAR</a> ,执行 <code>java -jar ClassyShark.jar</code></p>
 <p><img src="http://www.wailian.work/images/2018/04/23/2018-04-23_181150.png" alt="2018-04-23_181150.png"></p>
-  
-	</div>
-		<footer class="article-footer clearfix">
-<div class="article-catetags">
 
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/android/">android</a>
-  </div>
-
-</div>
-
-
-
-	<div class="article-share" id="share">
-	
-	  <div data-url="http://tsdking.github.io/2018/04/20/apkuncode/" data-title="Android反编译的简单总结 | 老徐的博客" data-tsina="1954587467" class="share clearfix">
-	  </div>
-	
-	</div>
-
-
-</footer>
-
-   	       
-	</article>
-	
-<nav class="article-nav clearfix">
- 
- <div class="prev" >
- <a href="/2018/06/02/IDEA-Unmapped/" title="IDEA-Unmapped Spring configuration files found解决办法">
-  <strong>上一篇：</strong><br/>
-  <span>
-  IDEA-Unmapped Spring configuration files found解决办法</span>
-</a>
-</div>
-
-
-<div class="next">
-<a href="/2018/04/18/alarmmanager/"  title="定时执行周期任务之AlarmManager，了解一下">
- <strong>下一篇：</strong><br/> 
- <span>定时执行周期任务之AlarmManager，了解一下
-</span>
-</a>
-</div>
-
-</nav>
-
-	
-<section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2018/04/20/apkuncode/" data-title="Android反编译的简单总结" data-url="http://tsdking.github.io/2018/04/20/apkuncode/"></div>
-</section>
-
-
-<section id="comments" class="comment">
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  </div>
-</section>
-
-
-
-</div>  
-      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
-
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目錄</strong>
- 
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android反编译的简单总结"><span class="toc-number">1.</span> <span class="toc-text">Android反编译的简单总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备"><span class="toc-number">1.1.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">1.2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用法"><span class="toc-number">1.3.</span> <span class="toc-text">用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Apktool"><span class="toc-number">1.3.1.</span> <span class="toc-text">Apktool</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#解码"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">解码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#重新构建"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">重新构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#补充"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">补充</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dex2jar"><span class="toc-number">1.3.2.</span> <span class="toc-text">Dex2jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JD-GUI"><span class="toc-number">1.3.3.</span> <span class="toc-text">JD-GUI</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Google开源的神器ClassyShark"><span class="toc-number">1.4.</span> <span class="toc-text">Google开源的神器ClassyShark</span></a></li></ol></li></ol>
- 
-  </div>
-
-<div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
-<aside class="clearfix">
-
-  
-
-  
-<div class="tagslist">
-	<p class="asidetitle">標簽</p>
-		<ul class="clearfix">
-		
-			
-				<li><a href="/tags/android/" title="android">android<sup>5</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/springboot/" title="springboot">springboot<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/linux/" title="linux">linux<sup>1</sup></a></li>
-			
-		
-		</ul>
-</div>
-
-
-  <div class="linkslist">
-  <p class="asidetitle">友情鏈接</p>
-    <ul>
-        
-          <li>
-            
-            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
-            
-          </li>
-        
-          <li>
-            
-            	<a href="http://www.github.com" target="_blank" title="Github">Github</a>
-            
-          </li>
-        
-    </ul>
-</div>
-
-  <div class="rsspart">
-	<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>
-</div>
-
-  
-<div class="github-card">
-<p class="asidetitle">Github 名片</p>
-<div class="github-card" data-github="https://github.com/tsdking" data-theme="medium"></div>
-<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
-</div>
-
-
-
-</aside>
-</div>
     </div>
-    <footer><div id="footer" >
-	
-	<div class="line">
-		<span></span>
-		<div class="author"></div>
-	</div>
-	
-	
-	<section class="info">
-		<p> 我是老徐，感谢你的阅读. <br/>
-			这是我的博客，记录着收获.</p>
-	</section>
-	 
-	<div class="social-font" class="clearfix">
-		
-		<a href="http://weibo.com/1954587467" target="_blank" class="icon-weibo" title="微博"></a>
-		
-		
-		<a href="https://github.com/https://github.com/tsdking" target="_blank" class="icon-github" title="github"></a>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		<a href="mailto:xqflylg@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
-		
-	</div>
-			
-		
-
-		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
-		
-		<a href="/about" target="_blank" title="老徐">老徐</a>
-		
-		
-		</p>
+    
+        <div class="reward">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="./img/reward-wepay.png"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
 </div>
-</footer>
-    <script src="/js/jquery-2.0.3.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.navbar').click(function(){
-    $('header nav').toggleClass('shownav');
-  });
-  var myWidth = 0;
-  function getSize(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-  };
-  var m = $('#main'),
-      a = $('#asidepart'),
-      c = $('.closeaside'),
-      o = $('.openaside');
-  c.click(function(){
-    a.addClass('fadeOut').css('display', 'none');
-    o.css('display', 'block').addClass('fadeIn');
-    m.addClass('moveMain');
-  });
-  o.click(function(){
-    o.css('display', 'none').removeClass('beforeFadeIn');
-    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
-    m.removeClass('moveMain');
-  });
-  $(window).scroll(function(){
-    o.css("top",Math.max(80,260-$(this).scrollTop()));
-  });
-  
-  $(window).resize(function(){
-    getSize(); 
-    if (myWidth >= 1024) {
-      $('header nav').removeClass('shownav');
-    }else{
-      m.removeClass('moveMain');
-      a.css('display', 'block').removeClass('fadeOut');
-      o.css('display', 'none');
-      
-      $('#toc.toc-aside').css('display', 'none');
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/06/02/IDEA-Unmapped/" class="pre-post btn btn-default" title="IDEA-Unmapped Spring configuration files found解决办法">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">IDEA-Unmapped Spring configuration files found解决办法</span>
+        </a>
+    
+    
+        <a href="/2018/04/18/alarmmanager/" class="next-post btn btn-default" title="定时执行周期任务之AlarmManager，了解一下">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">定时执行周期任务之AlarmManager，了解一下</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
         
-    }
-  });
-});
+	<!--PC和WAP自适应版-->
+<div id="SOHUCS"></div>
+<script type="text/javascript">
+	(function(){var appid='cytNiktTv';var conf='prod_a7f2a1a5867a7299d16de5fa849dbb87';var width=window.innerWidth||document.documentElement.clientWidth;if(width<960){window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id='+appid+'&conf='+conf+'"><\/script>');}else{var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}
+	c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})});}})();
 </script>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  c.click(function(){
-    ta.css('display', 'block').addClass('fadeIn');
-  });
-  o.click(function(){
-    ta.css('display', 'none');
-  });
-  $(window).scroll(function(){
-    ta.css("top",Math.max(140,320-$(this).scrollTop()));
-  });
-});
-</script>
-
-
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var $this = $('.share'),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina'),
-      description = $this.attr('description');
-  var html = [
-  '<div class="hoverqrcode clearfix"></div>',
-  '<a class="overlay" id="qrcode"></a>',
-  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
-  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-
-  $('.hoverqrcode').hide();
-
-  var myWidth = 0;
-  function updatehoverqrcode(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-    var qrsize = myWidth > 1024 ? 200:100;
-    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
-    var p = $('.article-share-qrcode').position();
-    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
-                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
-                          .qrcode(options);
-  };
-  $(window).resize(function(){
-    $('.hoverqrcode').hide();
-  });
-  $('.article-share-qrcode').click(function(){
-    updatehoverqrcode();
-    $('.hoverqrcode').toggle();
-  });
-  $('.article-share-qrcode').hover(function(){}, function(){
-      $('.hoverqrcode').hide();
-  });
-});   
-</script>
+    </div>
 
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"laoxu"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
 
-<script type="text/javascript">
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android反编译的简单总结"><span class="toc-text">Android反编译的简单总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备"><span class="toc-text">准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用法"><span class="toc-text">用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Apktool"><span class="toc-text">Apktool</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#解码"><span class="toc-text">解码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#重新构建"><span class="toc-text">重新构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#补充"><span class="toc-text">补充</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dex2jar"><span class="toc-text">Dex2jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JD-GUI"><span class="toc-text">JD-GUI</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Google开源的神器ClassyShark"><span class="toc-text">Google开源的神器ClassyShark</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
 
-var disqus_shortname = 'laoxu';
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
 
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
-</script>
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -680,56 +523,7 @@ var disqus_shortname = 'laoxu';
 
 
 
+<script src="/js/app.js?rev=@@hash"></script>
 
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
-
-
-
-<!-- Analytics Begin -->
-
-
-
-
-
-<!-- Analytics End -->
-
-<!-- Totop Begin -->
-
-	<div id="totop">
-	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
-	</div>
-	<script src="/js/totop.js"></script>
-
-<!-- Totop End -->
-
-<!-- MathJax Begin -->
-<!-- mathjax config similar to math.stackexchange -->
-
-
-<!-- MathJax End -->
-
-<!-- Tiny_search Begin -->
-
-<!-- Tiny_search End -->
-
-  </body>
+</body>
 </html>
